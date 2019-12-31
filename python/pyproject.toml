@@ -1,3 +1,18 @@
+[tool.poetry]
+name = "pytokenizations"
+version = "0.1.0"
+description = ""
+authors = ["Yohei Tamura <tamuhey@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.5"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.3.2"
+hypothesis = "^4.57.1"
+maturin = "^0.7.7"
+black = "^19.10b0"
+
 [build-system]
 requires = ["maturin"]
 build-backend = "maturin"

@@ -46,11 +46,11 @@ jobs:
       run: |
         poetry run maturin build --release --no-sdist -i python
 
-    - name: Cache target
-      uses: actions/cache@v1
+    - name: Upload target
+      uses: actions/upload-artifact@v1
       with:
+        name: ${{ matrix.os }}-target
         path: python/target
-        key: ${{ matrix.os }}-${{ github.sha }}-target
 
   publish:
     # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
@@ -69,11 +69,10 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Restore target
-      uses: actions/cache@v1
+    - name: Download target
+      uses: actions/download-artifact@v1
       with:
-        path: python/target
-        key: ${{ matrix.os }}-${{ github.sha }}-target
+        name: ${{ matrix.os }}-target
 
     - name: Install python requirements
       working-directory: python

@@ -57,8 +57,9 @@ jobs:
 
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@master
+      working-directory: python
       with:
         user: ${{ secrets.PYPI_USER }}
         password: ${{ secrets.PYPI_PASS }}
-        packages_dir: python/target/wheels
+        packages_dir: target/wheels
 

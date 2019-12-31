@@ -32,19 +32,25 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install poetry
+        poetry install
+        poetry run pip install maturin
 
     - name: Test with pytest
       working-directory: python
       run: |
-        poetry install
         poetry run maturin develop
         poetry run pytest tests
 
-    # - name: Cache target
-    #   uses: actions/cache@v1
-    #   with:
-    #     path: python/target
-    #     key: ${{ matrix.os }}-${{ github.sha }}-target
+    - name: Release build
+      working-directory: python
+      run: |
+        poetry run maturin build --release --no-sdist -i python
+
+    - name: Cache target
+      uses: actions/cache@v1
+      with:
+        path: python/target
+        key: ${{ matrix.os }}-${{ github.sha }}-target
 
   publish:
     # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
@@ -63,16 +69,23 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install requirements
+    - name: Restore target
+      uses: actions/cache@v1
+      with:
+        path: python/target
+        key: ${{ matrix.os }}-${{ github.sha }}-target
+
+    - name: Install python requirements
       working-directory: python
       run: |
         pip install poetry
         poetry install
+        poetry run pip install twine
 
     - name: Publish test-pypi package 
       working-directory: python
       run: |
-        poetry run maturin publish -r https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }} --no-sdist
+        poetry run twine upload --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }} target/wheels/*
 
     - name: Recreate python env and check test-pypi package
       working-directory: python
@@ -83,5 +96,5 @@ jobs:
     - name: Publish pypi package
       working-directory: python
       run: |
-        poetry run maturin publish -r https://test.pypi.org/legacy/ -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
+        poetry run twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }} target/wheels/*
 

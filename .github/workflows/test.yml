@@ -38,13 +38,21 @@ jobs:
         poetry install
         poetry run maturin develop
         poetry run pytest tests
-      env:
-        VERSION: 0.1.0
 
     - name: Publish test-pypi package 
       working-directory: python
       run: |
-        echo -e "${{ secrets.TEST_PYPI_USER }}\n${{ secrets.TEST_PYPI_PASS }}" poetry run maturin publish -r https://test.pypi.org/legacy/
+        echo -e "${{ secrets.TEST_PYPI_USER }}\n${{ secrets.TEST_PYPI_PASS }}" | poetry run maturin publish -r https://test.pypi.org/legacy/
+
+    - name: Recreate python env and check test-pypi package
+      working-directory: python
+      run: |
+        poetry env remove python
+        poetry run pip install --extra-index-url https://testpypi.python.org/pypi pytokenizations
         poetry run pytest tests
-      env:
-        VERSION: 0.1.0
+
+    - name: Publish pypi package
+      working-directory: python
+      run: |
+        echo -e "${{ secrets.PYPI_USER }}\n${{ secrets.PYPI_PASS }}" | poetry run maturin publish
+

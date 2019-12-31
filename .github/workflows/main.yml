@@ -50,6 +50,7 @@ jobs:
     # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: 2
       max-parallel: 4
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8]

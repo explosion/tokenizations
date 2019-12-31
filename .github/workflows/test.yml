@@ -51,11 +51,17 @@ jobs:
       uses: actions/cache@v1
       with:
         path: python/.venv
-        key: ${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}-venv
+        key: ${{ matrix.os }}-${{ github.sha }}-venv
 
   publish:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.5, 3.6, 3.7, 3.8]
+        os: [ubuntu-latest, macos-latest, windows-latest, ubuntu-16.0]
+    steps:
     - name: Restore target
       uses: actions/cache@v1
       with:

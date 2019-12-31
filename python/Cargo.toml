@@ -1,5 +1,5 @@
 [package]
-name = "tokenizations"
+name = "python"
 version = "0.1.0"
 authors = ["Yohei Tamura <tamuhey@gmail.com>"]
 edition = "2018"
@@ -7,9 +7,13 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-unicode-normalization = "0.1.8"
+tokenizations = { path = ".." }
 
-[dev-dependencies]
-itertools = "0.8.2"
-quickcheck = "0.8"
-quickcheck_macros = "0.8"
+
+[lib]
+name = "tokenizations"
+crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "0.8.4"
+features = ["extension-module"]

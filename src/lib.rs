@@ -8,6 +8,8 @@ extern crate unicode_normalization;
 use std::collections::HashMap;
 use unicode_normalization::UnicodeNormalization;
 
+pub type Alignment = Vec<Vec<usize>>;
+
 fn normalize(text: &str) -> String {
     text.nfkd().collect()
 }
@@ -203,8 +205,6 @@ fn get_alignment(
     }
     at2bt
 }
-
-type Alignment = Vec<Vec<usize>>;
 
 pub fn get_alignments(a: &[&str], b: &[&str]) -> (Alignment, Alignment) {
     let a: Vec<String> = a.iter().map(|x| normalize(*x)).collect();

@@ -1,0 +1,40 @@
+name: test rust and python package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [2.7, 3.5, 3.6, 3.7]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install latest nightly
+      uses: actions-rs/toolchain@v1
+      with:
+          toolchain: nightly
+          override: true
+    - name: Test with cargo
+      uses: actions-rs/cargo@v1.0.1
+      with:
+          command: test
+          toolchain: nightly
+
+    - name: Install dependencies with pip
+      working-directory: python
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+    - name: Test with pytest
+      working-directory: python
+      run: |
+        maturin develop
+        pytest tests

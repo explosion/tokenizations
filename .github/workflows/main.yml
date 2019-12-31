@@ -74,7 +74,7 @@ jobs:
       run: |
         pip install poetry
         poetry install
-        poetry run maturin publish -r https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
+        poetry run maturin publish -r https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }} --no-sdist
 
     - name: Recreate python env and check test-pypi package
       working-directory: python

@@ -5,7 +5,7 @@ build-backend = "maturin"
 [versionup]
 tag = false
 commit = false
-files = [ "src/lib.rs",]
+files = [ "src/lib.rs", "Cargo.toml"]
 
 [tool.poetry]
 name = "pytokenizations"

@@ -8,3 +8,6 @@ edition = "2018"
 
 [dependencies]
 unicode-normalization = "0.1.8"
+
+[dev-dependencies]
+itertools = "0.8.2"

@@ -1,3 +1,7 @@
+#[cfg(test)]
+#[macro_use]
+extern crate itertools;
+
 extern crate unicode_normalization;
 use std::collections::HashMap;
 use unicode_normalization::UnicodeNormalization;
@@ -67,29 +71,34 @@ fn get_shortest_edit_path_dp(a: &str, b: &str) -> EditPathFromGrid {
     }
     EditPathFromGrid::new(prev)
 }
+type Point = (usize, usize);
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+enum Node {
+    P(Point),
+    Root,
+}
 
 struct EditPathFromHashMap {
-    nodes_map: HashMap<(usize, usize), (usize, usize)>,
-    cur: (usize, usize),
+    nodes_map: HashMap<Node, Node>,
+    cur: Node,
 }
 
 impl<'a> Iterator for EditPathFromHashMap {
     type Item = (usize, usize);
     fn next(&mut self) -> Option<Self::Item> {
-        if self.cur == (0, 0) {
-            return None;
-        }
-        match self.nodes_map.get(&self.cur) {
-            Some(x) => {
-                self.cur = *x;
-                Some(*x)
+        match self.cur {
+            Node::Root => None,
+            Node::P(cur) => {
+                self.cur = *self.nodes_map.get(&Node::P(cur)).unwrap();
+                Some(cur)
             }
-            None => None,
         }
     }
 }
 
-/// Myers' diff algorithm. See [An O(ND) Difference Algorithm and Its Variations](http://www.xmailserver.org/diff2.pdf)
+/// Calculate shotest edit path based on Myers' diff algorithm.
+/// See [An O(ND) Difference Algorithm and Its Variations](http://www.xmailserver.org/diff2.pdf)
 fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
     let a: Vec<char> = a.chars().collect();
     let b: Vec<char> = b.chars().collect();
@@ -99,22 +108,21 @@ fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
     let get_y = |x, k| x + bound - k;
     let mut v = vec![0; 2 * bound + 1];
     let mut nodes_map = HashMap::new();
-    'outer: for d in 0..bound {
+    'outer: for d in 0..(bound + 1) {
         for k in ((bound - d)..(bound + d + 1)).step_by(2) {
-            let (mut x, px, py) = if d == 0 {
-                (0, 0, 0)
+            let (mut x, parent) = if d == 0 {
+                (0, Node::Root)
             } else if k == (bound - d) || k != (bound + d) && v[k - 1] < v[k + 1] {
                 let px = v[k + 1];
-                println!("{:?}", (bound, k, px, &a, &b));
-                (px, px, get_y(px, k + 1))
+                (px, Node::P((px, get_y(px, k + 1))))
             } else {
-                let px = v[k - 1] + 1;
-                (px + 1, px, get_y(px, k - 1))
+                let px = v[k - 1];
+                (px + 1, Node::P((px, get_y(px, k - 1))))
             };
             let mut y = get_y(x, k);
-            nodes_map.insert((x, y), (px, py));
+            nodes_map.insert(Node::P((x, y)), parent);
             while x < n && y < m && a[x] == b[y] {
-                nodes_map.insert((x + 1, y + 1), (x, y));
+                nodes_map.insert(Node::P((x + 1, y + 1)), Node::P((x, y)));
                 x = x + 1;
                 y = y + 1;
             }
@@ -126,7 +134,7 @@ fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
     }
     EditPathFromHashMap {
         nodes_map: nodes_map,
-        cur: (n, m),
+        cur: Node::P((n, m)),
     }
 }
 
@@ -153,13 +161,14 @@ mod tests {
     #[test]
     fn test_get_charmap() {
         let testcases = vec![
-            ("a", "a", vec![Some(0)], vec![Some(0)]),
             (
                 "あがさ",
                 "あかさ",
                 vec![Some(0), Some(1), None, Some(2)],
                 vec![Some(0), Some(1), Some(3)],
             ),
+            ("", "a", vec![], vec![None]),
+            ("a", "a", vec![Some(0)], vec![Some(0)]),
             (
                 "a\tb",
                 "a b",
@@ -170,8 +179,7 @@ mod tests {
         for (a, b, e_a2b, e_b2a) in testcases {
             let a = normalize(a);
             let b = normalize(b);
-            get_shortest_edit_path_myers(&a, &b);
-            let path = get_shortest_edit_path_dp(&a, &b);
+            let path = get_shortest_edit_path_myers(&a, &b);
             let (a2b, b2a) = path_to_charmap(path);
             assert_eq!(a2b, e_a2b);
             assert_eq!(b2a, e_b2a);

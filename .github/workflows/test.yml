@@ -36,9 +36,37 @@ jobs:
     - name: Test with pytest
       working-directory: python
       run: |
+        poetry config settings.virtualenvs.in-project true
         poetry install
         poetry run maturin develop
         poetry run pytest tests
+
+    - name: Cache target
+      uses: actions/cache@v1
+      with:
+        path: python/target
+        key: ${{ matrix.os }}-${{ github.sha }}-target
+
+    - name: Cache venv
+      uses: actions/cache@v1
+      with:
+        path: python/.venv
+        key: ${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}-venv
+
+  publish:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
+
+    - name: Restore target
+      uses: actions/cache@v1
+      with:
+        path: python/target
+        key: ${{ matrix.os }}-${{ github.sha }}-target
+
+    - name: Restore venv
+      uses: actions/cache@v1
+      with:
+        path: python/.venv
+        key: ${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}-venv
 
     - name: Publish test-pypi package 
       working-directory: python

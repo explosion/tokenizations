@@ -40,11 +40,11 @@ jobs:
         poetry run maturin develop
         poetry run pytest tests
 
-    - name: Cache target
-      uses: actions/cache@v1
-      with:
-        path: python/target
-        key: ${{ matrix.os }}-${{ github.sha }}-target
+    # - name: Cache target
+    #   uses: actions/cache@v1
+    #   with:
+    #     path: python/target
+    #     key: ${{ matrix.os }}-${{ github.sha }}-target
 
   publish:
     # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
@@ -63,17 +63,15 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Restore target
-      uses: actions/cache@v1
-      with:
-        path: python/target
-        key: ${{ matrix.os }}-${{ github.sha }}-target
-
-    - name: Publish test-pypi package 
+    - name: Install requirements
       working-directory: python
       run: |
         pip install poetry
         poetry install
+
+    - name: Publish test-pypi package 
+      working-directory: python
+      run: |
         poetry run maturin publish -r https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }} --no-sdist
 
     - name: Recreate python env and check test-pypi package

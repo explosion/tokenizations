@@ -8,10 +8,8 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        # python-version: [3.5, 3.6, 3.7, 3.8]
-        python-version: [3.5]
-        # os: [ubuntu-latest, macos-latest, windows-latest, ubuntu-16.0]
-        os: [ubuntu-latest]
+        python-version: [3.5, 3.6, 3.7, 3.8]
+        os: [ubuntu-latest, macos-latest, windows-latest, ubuntu-16.0]
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }}
@@ -42,10 +40,10 @@ jobs:
         poetry run maturin develop
         poetry run pytest tests
 
-    # - name: Publish test-pypi package 
-    #   working-directory: python
-    #   run: |
-    #     echo -e "${{ secrets.TEST_PYPI_USER }}\n${{ secrets.TEST_PYPI_PASS }}" | poetry run maturin publish -r https://test.pypi.org/legacy/
+    - name: Publish test-pypi package 
+      working-directory: python
+      run: |
+        echo -e "${{ secrets.TEST_PYPI_USER }}\n${{ secrets.TEST_PYPI_PASS }}" | poetry run maturin publish -r https://test.pypi.org/legacy/
 
     - name: Recreate python env and check test-pypi package
       working-directory: python
@@ -53,7 +51,6 @@ jobs:
         poetry env remove python
         poetry install
         poetry run pip install --extra-index-url https://testpypi.python.org/pypi pytokenizations
-        ls
         poetry run pytest tests
 
     - name: Publish pypi package

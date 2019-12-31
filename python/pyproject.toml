@@ -5,11 +5,11 @@ build-backend = "maturin"
 [versionup]
 tag = false
 commit = false
-files = [ "src/lib.rs", "Cargo.toml"]
+files = [ "src/lib.rs", "Cargo.toml",]
 
 [tool.poetry]
 name = "pytokenizations"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 

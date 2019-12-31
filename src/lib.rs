@@ -18,7 +18,6 @@ type Point = (usize, usize);
 struct EditPathFromGrid {
     d: Vec<Vec<usize>>,
     cur: Point,
-    size: (usize, usize),
     exhausted: bool,
 }
 
@@ -34,21 +33,22 @@ impl Iterator for EditPathFromGrid {
             return Some((0, 0));
         }
         let (i, j) = self.cur;
-        let mut ncur = (0, 0);
-        if i > 0 && j > 0 {
-            ncur = *[(i, j - 1), (i - 1, j)]
+        let ncur = if i > 0 && j > 0 {
+            let ncur = *[(i, j - 1), (i - 1, j)]
                 .iter()
                 .min_by_key(|x| self.d[x.0][x.1])
                 .unwrap();
             let ul = self.d[i - 1][j - 1];
             if self.d[ncur.0][ncur.1] > ul && self.d[i][j] == ul {
-                ncur = (i - 1, j - 1)
+                (i - 1, j - 1)
+            } else {
+                ncur
             }
         } else if i > 0 {
-            ncur = (i - 1, j);
+            (i - 1, j)
         } else {
-            ncur = (i, j - 1);
-        }
+            (i, j - 1)
+        };
         self.cur = ncur;
         Some((i, j))
     }
@@ -81,7 +81,6 @@ fn get_shortest_edit_path_dp(a: &str, b: &str) -> EditPathFromGrid {
     EditPathFromGrid {
         d: d,
         cur: (n, m),
-        size: (n + 1, m + 1),
         exhausted: false,
     }
 }

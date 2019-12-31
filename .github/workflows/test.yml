@@ -37,7 +37,7 @@ jobs:
       working-directory: python
       run: |
         poetry install
-        poetry run maturin build
+        poetry run maturin develop
         poetry run pytest tests
       env:
         VERSION: 0.1.0

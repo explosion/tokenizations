@@ -36,7 +36,6 @@ jobs:
     - name: Test with pytest
       working-directory: python
       run: |
-        poetry config settings.virtualenvs.in-project true
         poetry install
         poetry run maturin develop
         poetry run pytest tests
@@ -47,14 +46,8 @@ jobs:
         path: python/target
         key: ${{ matrix.os }}-${{ github.sha }}-target
 
-    - name: Cache venv
-      uses: actions/cache@v1
-      with:
-        path: python/.venv
-        key: ${{ matrix.os }}-${{ github.sha }}-venv
-
   publish:
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
+    # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
     runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 4
@@ -68,27 +61,20 @@ jobs:
         path: python/target
         key: ${{ matrix.os }}-${{ github.sha }}-target
 
-    - name: Restore venv
-      uses: actions/cache@v1
-      with:
-        path: python/.venv
-        key: ${{ matrix.os }}-${{ hashFiles('**/package-lock.json') }}-venv
-
     - name: Publish test-pypi package 
       working-directory: python
       run: |
-        echo -e "${{ secrets.TEST_PYPI_USER }}\n${{ secrets.TEST_PYPI_PASS }}" | poetry run maturin publish -r https://test.pypi.org/legacy/
+        poetry install
+        poetry run maturin publish -r https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
     - name: Recreate python env and check test-pypi package
       working-directory: python
       run: |
-        poetry env remove python
-        poetry install
         poetry run pip install --extra-index-url https://testpypi.python.org/pypi pytokenizations
         poetry run pytest tests
 
     - name: Publish pypi package
       working-directory: python
       run: |
-        echo -e "${{ secrets.PYPI_USER }}\n${{ secrets.PYPI_PASS }}" | poetry run maturin publish
+        poetry run maturin publish -r https://test.pypi.org/legacy/ -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
 

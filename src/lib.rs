@@ -1,6 +1,8 @@
 #[cfg(test)]
-#[macro_use]
-extern crate itertools;
+extern crate quickcheck;
+#[cfg(test)]
+#[macro_use(quickcheck)]
+extern crate quickcheck_macros;
 
 extern crate unicode_normalization;
 use std::collections::HashMap;
@@ -10,23 +12,17 @@ fn normalize(text: &str) -> String {
     text.nfkd().collect()
 }
 
+type Point = (usize, usize);
+
+#[cfg(test)]
 struct EditPathFromGrid {
-    grid: Vec<Vec<(usize, usize)>>,
-    cur: (usize, usize),
+    d: Vec<Vec<usize>>,
+    cur: Point,
+    size: (usize, usize),
     exhausted: bool,
 }
-impl EditPathFromGrid {
-    fn new(grid: Vec<Vec<(usize, usize)>>) -> Self {
-        let n = grid.len();
-        let m = grid[0].len();
-        EditPathFromGrid {
-            grid: grid,
-            cur: (n - 1, m - 1),
-            exhausted: false,
-        }
-    }
-}
 
+#[cfg(test)]
 impl Iterator for EditPathFromGrid {
     type Item = (usize, usize);
     fn next(&mut self) -> Option<Self::Item> {
@@ -37,13 +33,28 @@ impl Iterator for EditPathFromGrid {
             self.exhausted = true;
             return Some((0, 0));
         }
-        let prev = self.cur;
-        let next = self.grid[self.cur.0][self.cur.1];
-        self.cur = next;
-        Some(prev)
+        let (i, j) = self.cur;
+        let mut ncur = (0, 0);
+        if i > 0 && j > 0 {
+            ncur = *[(i, j - 1), (i - 1, j)]
+                .iter()
+                .min_by_key(|x| self.d[x.0][x.1])
+                .unwrap();
+            let ul = self.d[i - 1][j - 1];
+            if self.d[ncur.0][ncur.1] > ul && self.d[i][j] == ul {
+                ncur = (i - 1, j - 1)
+            }
+        } else if i > 0 {
+            ncur = (i - 1, j);
+        } else {
+            ncur = (i, j - 1);
+        }
+        self.cur = ncur;
+        Some((i, j))
     }
 }
 
+#[cfg(test)]
 fn get_shortest_edit_path_dp(a: &str, b: &str) -> EditPathFromGrid {
     let n = a.chars().count();
     let m = b.chars().count();
@@ -52,12 +63,10 @@ fn get_shortest_edit_path_dp(a: &str, b: &str) -> EditPathFromGrid {
     for i in 0..(n + 1) {
         d[i][0] = i;
     }
-    let mut prev = vec![vec![(std::usize::MAX, std::usize::MAX); m + 1]; n + 1];
     for (i, ca) in a.chars().enumerate() {
         for (j, cb) in b.chars().enumerate() {
             if ca == cb {
                 d[i + 1][j + 1] = d[i][j];
-                prev[i + 1][j + 1] = (i, j);
             } else {
                 let mut u = (i + 1, j);
                 let l = (i, j + 1);
@@ -65,13 +74,17 @@ fn get_shortest_edit_path_dp(a: &str, b: &str) -> EditPathFromGrid {
                     u = l;
                 }
                 d[i + 1][j + 1] = d[u.0][u.1] + 1;
-                prev[i + 1][j + 1] = u;
             }
         }
     }
-    EditPathFromGrid::new(prev)
+
+    EditPathFromGrid {
+        d: d,
+        cur: (n, m),
+        size: (n + 1, m + 1),
+        exhausted: false,
+    }
 }
-type Point = (usize, usize);
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 enum Node {
@@ -132,6 +145,7 @@ fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
             }
         }
     }
+
     EditPathFromHashMap {
         nodes_map: nodes_map,
         cur: Node::P((n, m)),
@@ -158,6 +172,14 @@ fn path_to_charmap(
 #[cfg(test)]
 mod tests {
     use crate::*;
+
+    #[quickcheck]
+    fn randomcheck_myers_with_dp(a: String, b: String) {
+        let v = path_to_charmap(get_shortest_edit_path_dp(&a, &b));
+        let w = path_to_charmap(get_shortest_edit_path_myers(&a, &b));
+        assert_eq!(v, w)
+    }
+
     #[test]
     fn test_get_charmap() {
         let testcases = vec![
@@ -168,7 +190,13 @@ mod tests {
                 vec![Some(0), Some(1), Some(3)],
             ),
             ("", "a", vec![], vec![None]),
-            ("a", "a", vec![Some(0)], vec![Some(0)]),
+            ("", "", vec![], vec![]),
+            (
+                "å\tb",
+                "a b",
+                vec![Some(0), None, None, Some(2)],
+                vec![Some(0), None, Some(3)],
+            ),
             (
                 "a\tb",
                 "a b",

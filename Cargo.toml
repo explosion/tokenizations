@@ -11,3 +11,5 @@ unicode-normalization = "0.1.8"
 
 [dev-dependencies]
 itertools = "0.8.2"
+quickcheck = "0.8"
+quickcheck_macros = "0.8"

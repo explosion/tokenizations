@@ -152,9 +152,9 @@ fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
     }
 }
 
-fn path_to_charmap(
-    mut path: impl Iterator<Item = (usize, usize)>,
-) -> (Vec<Option<usize>>, Vec<Option<usize>>) {
+type CharMap = Vec<Option<usize>>;
+
+fn path_to_charmap(mut path: impl Iterator<Item = (usize, usize)>) -> (CharMap, CharMap) {
     let (mut i, mut j) = path.next().unwrap();
     let mut a2b = vec![None; i];
     let mut b2a = vec![None; j];
@@ -169,10 +169,90 @@ fn path_to_charmap(
     (a2b, b2a)
 }
 
+pub fn get_charmap(a: &str, b: &str) -> (CharMap, CharMap) {
+    path_to_charmap(get_shortest_edit_path_myers(a, b))
+}
+
+fn get_char2token(tokens: &[String]) -> Vec<usize> {
+    let mut c2t = vec![0; tokens.join("").chars().count()];
+    let mut cur = 0;
+    for (i, token) in tokens.iter().enumerate() {
+        for _ in 0..token.chars().count() {
+            c2t[cur] = i;
+            cur += 1;
+        }
+    }
+    c2t
+}
+
+fn get_alignment(
+    num_tokens: usize,
+    a2b: &[Option<usize>],
+    ac2t: &[usize],
+    bc2t: &[usize],
+) -> Vec<Vec<usize>> {
+    let mut at2bt = vec![vec![]; num_tokens];
+    for (ti, a2bi) in ac2t.iter().zip(a2b) {
+        if let Some(i) = a2bi {
+            if let Some(j) = at2bt[*ti].last() {
+                if *j == bc2t[*i] {
+                    continue;
+                }
+            }
+            at2bt[*ti].push(bc2t[*i])
+        }
+    }
+    at2bt
+}
+
+type Alignment = Vec<Vec<usize>>;
+
+pub fn get_alignments(a: &[&str], b: &[&str]) -> (Alignment, Alignment) {
+    let a: Vec<String> = a.iter().map(|x| normalize(*x)).collect();
+    let b: Vec<String> = b.iter().map(|x| normalize(*x)).collect();
+    let ac2t = get_char2token(&a);
+    let bc2t = get_char2token(&b);
+    let (a2b, b2a) = path_to_charmap(get_shortest_edit_path_myers(&a.join(""), &b.join("")));
+    let at2bt = get_alignment(a.len(), &a2b, &ac2t, &bc2t);
+    let bt2at = get_alignment(b.len(), &b2a, &bc2t, &ac2t);
+    (at2bt, bt2at)
+}
+
 #[cfg(test)]
 mod tests {
     use crate::*;
 
+    #[test]
+    fn test_get_alignment() {
+        let testcases = vec![
+            (
+                (vec!["fあo①が", "bar"], vec!["fあo1かb", "ar"]),
+                (vec![vec![0], vec![0, 1]], vec![vec![0, 1], vec![1]]),
+            ),
+            (
+                (vec!["New York"], vec!["New", "York"]),
+                (vec![vec![0, 1]], vec![vec![0], vec![0]]),
+            ),
+            (
+                (vec!["A'B"], vec!["A", "B"]),
+                (vec![vec![0, 1]], vec![vec![0], vec![0]]),
+            ),
+            (
+                (vec![""], vec!["", ""]),
+                (vec![vec![]], vec![vec![], vec![]]),
+            ),
+            (
+                (vec!["à", "la", "gorge"], vec!["a", "la", "gorge"]),
+                (
+                    vec![vec![0], vec![1], vec![2]],
+                    vec![vec![0], vec![1], vec![2]],
+                ),
+            ),
+        ];
+        for (input, expected) in testcases {
+            assert_eq!(get_alignments(&input.0, &input.1), expected);
+        }
+    }
     #[quickcheck]
     fn randomcheck_myers_with_dp(a: String, b: String) {
         let v = path_to_charmap(get_shortest_edit_path_dp(&a, &b));

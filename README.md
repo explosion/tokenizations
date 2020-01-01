@@ -30,12 +30,12 @@ b2a = [[0, 1]]
 assert tokenizations.get_alignments(a, b) == (a2b, b2a)
 ```
 
-## Algolithm
+## Algorithm
 
 Let $A = a_{11}a_{12}..a_{1k_1},a_{21}..a_{Nk_N}$ and $B = b_{11}b_{12}..b_{1l_1},b_{21}..b_{Ml_M}$ be tokens of length N and M respectively. Each token $A_i$ in $A$ and $B_j$ in $B$ have length $k_i$ and $l_j$ respectively.
 The *alignment* $AL_{AB}$ of $A$ to $B$ is such that $ \forall j \in AL_{AB,i} => B_j \cap A_i $. ($t \cap s$ means t partially matches s.)
 For example, $a=["f","o","o"], b=["fo","o"] => AL_{AB} = [[1],[1],[2]], AL_{BA} = [[1, 2], [3]]$.
-The goal of this algolithm is to find such $AL_{AB}$ and $AL_{BA}$
+The goal of this algorithm is to find such $AL_{AB}$ and $AL_{BA}$
 
 1. Normalize tokens in the unicode normalization form "NFKD"
 2. Concatenate all tokens $A$ and $B$ to generate $TA$ and $TB$ respectively
@@ -55,7 +55,7 @@ Before calculating the edit graph, we combine tokens into text. For example, if 
 
 3. Calculate shortest path on edit graph from $TA$ and $TB$
 
-We calculate the shortest path on edit graph from texts $TA$ and $TB$ to get character map between them.  The path can be calculated, for example, by [Myers' algolighm](http://www.xmailserver.org/diff2.pdf)
+We calculate the shortest path on edit graph from texts $TA$ and $TB$ to get character map between them.  The path can be calculated, for example, by [Myers' algorighm](http://www.xmailserver.org/diff2.pdf)
 
 4. Get character alignments $C_{AB}$ and $C_{BA}$ from the edit graph
 

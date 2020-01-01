@@ -19,7 +19,7 @@ b2a = [[0], [0]]
 assert tokenizations.get_alignments(a, b) == (a2b, b2a)
 ```
 
-`a2b[i]` is a list representing the alignment map from token `a` to `b`.   
+`a2b[i]` is a list representing the alignment from `a` to `b`.   
 You can get the alignments for "dirty" tokens:
 
 ```python

@@ -33,7 +33,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
         poetry install
-        poetry run pip install maturin
 
     - name: build python package
       working-directory: python
@@ -53,7 +52,6 @@ jobs:
     - name: Publish test-pypi package 
       working-directory: python
       run: |
-        poetry run pip install twine
         poetry run twine upload --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }} target/wheels/*
 
     - name: Recreate python env and check test-pypi package

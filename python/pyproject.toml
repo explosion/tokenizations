@@ -19,3 +19,5 @@ python = ">=3.5"
 [tool.poetry.dev-dependencies]
 pytest = "^5.3.2"
 hypothesis = "^4.57.1"
+twine = "^1.15.0"
+maturin = "^0.7.7"

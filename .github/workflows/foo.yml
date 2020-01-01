@@ -3,7 +3,8 @@ name: test rust and python package
 on: [push]
 
 jobs:
-  test:
+  publish:
+    needs: test
     runs-on: ubuntu-latest
     steps:
-    - run: echo foo
+    - run: echo bar

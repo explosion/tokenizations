@@ -43,6 +43,18 @@ jobs:
       run: poetry run pytest tests
 
     - name: Release build
+      if: ${{ matrix.os }} == "ubuntu-latest" && ${{ python-version }} == "3.7"
+      working-directory: python
+      run: |
+        poetry run maturin build --release -i python
+
+    - name: Release build (without sdist)
+      if: ${{ matrix.os }} != "ubuntu-latest" || ${{ python-version }} != "3.7"
+      working-directory: python
+      run: |
+        poetry run maturin build --release --no-sdist -i python
+
+    - name: Release build
       working-directory: python
       run: |
         poetry run maturin build --release --no-sdist -i python

@@ -57,13 +57,11 @@ jobs:
     - name: Recreate python env and check test-pypi package
       working-directory: python
       run: |
-        poetry env remove python
-        poetry install
-        poetry run pip install --extra-index-url https://testpypi.python.org/pypi pytokenizations
-        poetry run pytest tests
+        pip install --extra-index-url https://testpypi.python.org/pypi pytokenizations
+        pip install pytest twine hypothesis
 
     - name: Publish pypi package
       working-directory: python
       run: |
-        poetry run twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }} target/wheels/*
+        twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }} target/wheels/*
 

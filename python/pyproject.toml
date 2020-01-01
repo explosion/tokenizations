@@ -9,7 +9,7 @@ files = [ "src/lib.rs", "Cargo.toml",]
 
 [tool.poetry]
 name = "pytokenizations"
-version = "0.1.6"
+version = "0.1.7"
 description = ""
 authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 

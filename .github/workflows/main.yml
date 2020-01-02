@@ -46,7 +46,7 @@ jobs:
       run: poetry run pytest tests
 
   publish-rust:
-    # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/rust/')
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/rust/')
     needs: test
     runs-on: ubuntu-latest
     steps:

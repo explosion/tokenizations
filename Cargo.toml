@@ -1,6 +1,6 @@
 [package]
 name = "tokenizations"
-version = "0.1.1"
+version = "0.1.2"
 license = "MIT"
 description = "Tokenizations alignments library"
 homepage = "https://github.com/tamuhey/tokenizations"

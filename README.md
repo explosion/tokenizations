@@ -1,4 +1,4 @@
-# Tokenizations alignment library for Python, written in Rust
+# Tokenizations alignment library for Rust and Python, written in Rust
 
 ## Installation
 

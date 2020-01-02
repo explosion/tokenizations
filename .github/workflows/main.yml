@@ -72,11 +72,6 @@ jobs:
         pip install poetry
         poetry install
 
-    # - name: Release build
-    #   if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7'
-    #   working-directory: python
-    #   run: poetry run maturin build --release -i python
-
     - name: Release build (without sdist)
       # if: matrix.os != 'ubuntu-latest' || matrix.python-version != '3.7'
       working-directory: python

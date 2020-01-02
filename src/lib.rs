@@ -12,7 +12,7 @@ use unicode_normalization::UnicodeNormalization;
 pub type Alignment = Vec<Vec<usize>>;
 
 fn normalize(text: &str) -> String {
-    text.nfkd().collect()
+    text.to_lowercase().nfkd().collect()
 }
 
 type Point = (usize, usize);
@@ -275,6 +275,10 @@ mod tests {
             ),
             (
                 (vec!["A'B"], vec!["A", "B"]),
+                (vec![vec![0, 1]], vec![vec![0], vec![0]]),
+            ),
+            (
+                (vec!["A'b"], vec!["a", "b"]),
                 (vec![vec![0, 1]], vec![vec![0], vec![0]]),
             ),
             (

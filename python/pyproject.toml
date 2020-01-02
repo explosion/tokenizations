@@ -3,13 +3,14 @@ requires = [ "maturin",]
 build-backend = "maturin"
 
 [versionup]
-tag = false
-commit = false
+tag = true
+commit = true
 files = [ "src/lib.rs", "Cargo.toml",]
+tag_prefix = "python/"
 
 [tool.poetry]
 name = "pytokenizations"
-version = "0.1.7"
+version = "0.2.0"
 description = ""
 authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 

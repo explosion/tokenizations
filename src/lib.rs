@@ -1,3 +1,4 @@
+//! Tokenizations alignment functions.
 #[cfg(test)]
 extern crate quickcheck;
 #[cfg(test)]

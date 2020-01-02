@@ -37,7 +37,7 @@ The *alignment* $AL_{AB}$ of $A$ to $B$ is such that $ \forall j \in AL_{AB,i} =
 For example, $a=["f","o","o"], b=["fo","o"] => AL_{AB} = [[1],[1],[2]], AL_{BA} = [[1, 2], [3]]$.
 The goal of this algorithm is to find such $AL_{AB}$ and $AL_{BA}$
 
-1. Normalize tokens in the unicode normalization form "NFKD"
+1. Normalize tokens in the unicode normalization form "NFKD", then lowercase all characters.
 2. Concatenate all tokens $A$ and $B$ to generate $TA$ and $TB$ respectively
 3. Calculate shortest path on edit graph of $TA$ and $TB$
 4. Get character mapping $C_{AB}$ and $C_{BA}$ from the edit graph
@@ -47,7 +47,7 @@ Details:
 
 1. Normalize tokens in the unicode normalization form "NFKD"
 
-To compare the token positions, we must compare each characters in tokens. Because the two tokenizations may be partially different, we normalize them in "NFKD" first.
+To compare the token positions, we must compare each characters in tokens. Because the two tokenizations may be partially different, we normalize them in "NFKD" and lowercase them first.
 
 2. Concatenate all tokens $A$ and $B$ to generate $TA$ and $TB$ respectively 
  

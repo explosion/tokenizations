@@ -7,6 +7,8 @@ homepage = "https://github.com/tamuhey/tokenizations"
 repository = "https://github.com/tamuhey/tokenizations"
 keywords = ["nlp", "text", "algorithm"]
 authors = ["Yohei Tamura <tamuhey@gmail.com>"]
+readme = "README.md"
+documentation = "https://docs.rs/tokenizations/0.1.0/tokenizations/"
 
 [dependencies]
 unicode-normalization = "0.1.8"

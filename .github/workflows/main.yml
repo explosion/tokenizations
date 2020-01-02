@@ -45,7 +45,22 @@ jobs:
       working-directory: python
       run: poetry run pytest tests
 
-  publish:
+  publish-rust:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/rust/')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+    - name: Publish to creates.io
+      run: |
+        cargo login ${{ secrets.CRATES_PASS }}
+        cargo publish
+
+  publish-python:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
     needs: test
     runs-on: ${{ matrix.os }}

@@ -1,6 +1,9 @@
 name: test rust and python package
 
-on: [push]
+on: 
+  push:
+    paths-ignore:
+      - 'README.md'
 
 jobs:
   test:

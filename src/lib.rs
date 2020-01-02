@@ -111,7 +111,8 @@ impl<'a> Iterator for EditPathFromHashMap {
     }
 }
 
-/// Calculate shotest edit path based on Myers' diff algorithm.
+/// Returns an iterator over the shotest path of the edit graph based on Myers' diff algorithm.
+///
 /// See [An O(ND) Difference Algorithm and Its Variations](http://www.xmailserver.org/diff2.pdf)
 fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
     let a: Vec<char> = a.chars().collect();
@@ -170,6 +171,20 @@ fn path_to_charmap(mut path: impl Iterator<Item = (usize, usize)>) -> (CharMap, 
     (a2b, b2a)
 }
 
+/// Returns character mappings `c_a2b` (from `a` to `b`) and `c_b2a` (from `b` to `a`) based on shortest edit script (SES).
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```
+/// use tokenizations::get_charmap;
+/// let a = "foo";
+/// let b = "f0oo";
+/// let (c_a2b, c_b2a) = get_charmap(a, b);
+/// assert_eq!(c_a2b, vec![Some(0), Some(2), Some(3)]);
+/// assert_eq!(c_b2a, vec![Some(0), None, Some(1), Some(2)]);
+/// ```
 pub fn get_charmap(a: &str, b: &str) -> (CharMap, CharMap) {
     path_to_charmap(get_shortest_edit_path_myers(a, b))
 }
@@ -186,6 +201,7 @@ fn get_char2token(tokens: &[String]) -> Vec<usize> {
     c2t
 }
 
+// Returns tokenization alignment from ta to tb.
 fn get_alignment(
     num_tokens: usize,
     a2b: &[Option<usize>],
@@ -206,6 +222,30 @@ fn get_alignment(
     at2bt
 }
 
+/// Returns tokenizations alignments `a2b` (from `a` to `b`) and `b2a` (from `b` to `a`) based on shortest edit script (SES).
+///
+/// # Examples
+///
+/// ```
+/// use tokenizations::get_alignments;
+///
+/// let a = vec!["New York"];
+/// let b = vec!["New", "York"];
+/// // calculate the two alignments `a2b` and `b2a` at the same time
+/// let (a2b, b2a) = get_alignments(&a, &b);
+///
+/// // `a2b[i]` is a set that holds indices `j`s of `b` such that `a[i]` corresponds to `b[j]`
+/// assert_eq!(a2b, vec![[0, 1]]);
+/// // `b2a` is the inverse of `a2b`
+/// assert_eq!(b2a, vec![[0], [0]]);
+///
+/// // `get_alignments` can be applied to noisy tokens.
+/// let a = vec!["à", "la", "gorge"];
+/// let b = vec!["a", "la", "gorge"]; // dropped accent
+/// let (a2b, b2a) = get_alignments(&a, &b);
+/// assert_eq!(a2b, vec![[0], [1], [2]]);
+/// assert_eq!(a2b, vec![[0], [1], [2]]);
+/// ```
 pub fn get_alignments(a: &[&str], b: &[&str]) -> (Alignment, Alignment) {
     let a: Vec<String> = a.iter().map(|x| normalize(*x)).collect();
     let b: Vec<String> = b.iter().map(|x| normalize(*x)).collect();

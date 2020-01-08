@@ -27,6 +27,25 @@ def test_equality(a):
         ),
     ],
 )
-def test_equality(input_, expected):
+def test_get_alignments(input_, expected):
     output = tokenizations.get_alignments(*input_)
     assert output == expected
+
+
+@pytest.mark.parametrize(
+    "input_,expected", [(("foo", "fo0"), ([0, 1, None], [0, 1, None]))]
+)
+def test_get_charmap(input_, expected):
+    output = tokenizations.get_charmap(*input_)
+
+
+@given(st.text(), st.text())
+def test_random_charmap(a, b):
+    tokenizations.get_charmap(a, b)
+
+
+@given(st.text())
+def test_equality_charmap(a):
+    a2b, b2a = tokenizations.get_charmap(a, a)
+    assert a2b == b2a
+    assert a2b == list(range(len(a)))

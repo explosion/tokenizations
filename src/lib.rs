@@ -155,7 +155,7 @@ fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
     }
 }
 
-type CharMap = Vec<Option<usize>>;
+pub type CharMap = Vec<Option<usize>>;
 
 fn path_to_charmap(mut path: impl Iterator<Item = (usize, usize)>) -> (CharMap, CharMap) {
     let (mut i, mut j) = path.next().unwrap();

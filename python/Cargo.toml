@@ -1,6 +1,6 @@
 [package]
 name = "pytokenizations"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["Yohei Tamura <tamuhey@gmail.com>"]
 edition = "2018"
 

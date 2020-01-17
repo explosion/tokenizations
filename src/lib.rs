@@ -11,8 +11,8 @@ use unicode_normalization::UnicodeNormalization;
 
 pub type Alignment = Vec<Vec<usize>>;
 
-fn normalize(text: &str) -> String {
-    text.to_lowercase().nfkd().collect()
+fn normalize<S: AsRef<str>>(text: S) -> String {
+    text.as_ref().to_lowercase().nfkd().collect()
 }
 
 type Point = (usize, usize);
@@ -172,26 +172,6 @@ fn path_to_charmap(mut path: impl Iterator<Item = (usize, usize)>) -> (CharMap, 
     (a2b, b2a)
 }
 
-/// Returns character mappings `c_a2b` (from `a` to `b`) and `c_b2a` (from `b` to `a`) based on shortest edit script (SES).
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```
-/// use tokenizations::get_charmap;
-/// let a = "foo";
-/// let b = "f0oo";
-/// let (c_a2b, c_b2a) = get_charmap(a, b);
-/// assert_eq!(c_a2b, vec![Some(0), Some(2), Some(3)]);
-/// assert_eq!(c_b2a, vec![Some(0), None, Some(1), Some(2)]);
-/// ```
-pub fn get_charmap(a: &str, b: &str) -> (CharMap, CharMap) {
-    let a = normalize(a);
-    let b = normalize(b);
-    path_to_charmap(get_shortest_edit_path_myers(&a, &b))
-}
-
 fn get_char2token(tokens: &[String]) -> Vec<usize> {
     let mut c2t = vec![0; tokens.join("").chars().count()];
     let mut cur = 0;
@@ -249,15 +229,40 @@ fn get_alignment(
 /// assert_eq!(a2b, vec![[0], [1], [2]]);
 /// assert_eq!(a2b, vec![[0], [1], [2]]);
 /// ```
-pub fn get_alignments(a: &[&str], b: &[&str]) -> (Alignment, Alignment) {
-    let a: Vec<String> = a.iter().map(|x| normalize(*x)).collect();
-    let b: Vec<String> = b.iter().map(|x| normalize(*x)).collect();
+pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment) {
+    let a: Vec<String> = a.iter().map(|x| normalize(x.as_ref())).collect();
+    let b: Vec<String> = b.iter().map(|x| normalize(x.as_ref())).collect();
     let ac2t = get_char2token(&a);
     let bc2t = get_char2token(&b);
     let (a2b, b2a) = path_to_charmap(get_shortest_edit_path_myers(&a.join(""), &b.join("")));
     let at2bt = get_alignment(a.len(), &a2b, &ac2t, &bc2t);
     let bt2at = get_alignment(b.len(), &b2a, &bc2t, &ac2t);
     (at2bt, bt2at)
+}
+
+/// Returns character mappings `c_a2b` (from `a` to `b`) and `c_b2a` (from `b` to `a`) based on shortest edit script (SES).
+///
+/// `a` and `b` can be noisy. For example, `bar` and `bår` can be compared.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```
+/// use tokenizations::get_charmap;
+/// let a = "bar";
+/// let b = "bår";
+/// let (c_a2b, c_b2a) = get_charmap(a, b);
+/// assert_eq!(c_a2b, vec![Some(0), Some(1), Some(2)]);
+/// assert_eq!(c_b2a, vec![Some(0), Some(1), Some(2)]);
+/// ```
+pub fn get_charmap(a: &str, b: &str) -> (CharMap, CharMap) {
+    let at: Vec<String> = a.chars().map(|x| x.to_string()).collect();
+    let bt: Vec<String> = b.chars().map(|x| x.to_string()).collect();
+    let (a2b, b2a) = get_alignments(&at, &bt);
+    let c_a2b: CharMap = a2b.into_iter().map(|x| x.into_iter().next()).collect();
+    let c_b2a: CharMap = b2a.into_iter().map(|x| x.into_iter().next()).collect();
+    (c_a2b, c_b2a)
 }
 
 #[cfg(test)]
@@ -312,16 +317,16 @@ mod tests {
             (
                 "あがさ",
                 "あかさ",
-                vec![Some(0), Some(1), None, Some(2)],
-                vec![Some(0), Some(1), Some(3)],
+                vec![Some(0), Some(1), Some(2)],
+                vec![Some(0), Some(1), Some(2)],
             ),
             ("", "a", vec![], vec![None]),
             ("", "", vec![], vec![]),
             (
                 "å\tb",
                 "a b",
-                vec![Some(0), None, None, Some(2)],
-                vec![Some(0), None, Some(3)],
+                vec![Some(0), None, Some(2)],
+                vec![Some(0), None, Some(2)],
             ),
             (
                 "a\tb",
@@ -335,12 +340,10 @@ mod tests {
                 vec![Some(0), Some(1), Some(2), Some(3)],
                 vec![Some(0), Some(1), Some(2), Some(3)],
             ),
+            ("¨", "", vec![None], vec![]),
         ];
         for (a, b, e_a2b, e_b2a) in testcases {
-            let a = normalize(a);
-            let b = normalize(b);
-            let path = get_shortest_edit_path_myers(&a, &b);
-            let (a2b, b2a) = path_to_charmap(path);
+            let (a2b, b2a) = get_charmap(a, b);
             assert_eq!(a2b, e_a2b);
             assert_eq!(b2a, e_b2a);
         }

@@ -1,4 +1,6 @@
 build:
+	poetry run maturin build
+develop:
 	poetry run maturin develop
-test: build
+test: develop
 	poetry run pytest tests

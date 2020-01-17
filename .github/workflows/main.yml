@@ -1,4 +1,4 @@
-name: test rust and python package
+name: Test
 
 on: 
   push:

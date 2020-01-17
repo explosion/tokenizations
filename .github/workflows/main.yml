@@ -1,4 +1,4 @@
-name: test rust and python package
+name: Test
 
 on: 
   push:
@@ -93,17 +93,13 @@ jobs:
       if: matrix.os != 'ubuntu-latest' || matrix.python-version != '3.7'
       working-directory: python
       run: |
-        maturin publish -i python --no-sdist \
-        --repository-url https://test.pypi.org/legacy/ \
-        -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
+        maturin publish -i python --no-sdist --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
     - name: Publish
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7'
       working-directory: python
       run: |
-        maturin publish -i python \
-        --repository-url https://test.pypi.org/legacy/ \
-        -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
+        maturin publish -i python --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
     - name: check test-pypi package
       working-directory: python

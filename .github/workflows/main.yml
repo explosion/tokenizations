@@ -1,4 +1,4 @@
-name: Test
+name: test rust and python package
 
 on: 
   push:
@@ -83,32 +83,38 @@ jobs:
           toolchain: nightly
           override: true
 
-    - name: Install Python dependencies
+    - name: Install publishment tool
       working-directory: python
       run: |
         python -m pip install --upgrade pip
         pip install maturin
 
-    - name: Build python package
+    - name: Publish (without sdist)
+      if: matrix.os != 'ubuntu-latest' || matrix.python-version != '3.7'
       working-directory: python
       run: |
-        maturin build
+        maturin publish -i python --no-sdist \
+        --repository-url https://test.pypi.org/legacy/ \
+        -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
-    - name: Publish test-pypi package 
+    - name: Publish
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7'
       working-directory: python
       run: |
-        maturin publish --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
-      continue-on-error: true
+        maturin publish -i python \
+        --repository-url https://test.pypi.org/legacy/ \
+        -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
     - name: check test-pypi package
       working-directory: python
       run: |
         pip install --extra-index-url https://testpypi.python.org/pypi pytokenizations
-        pip install pytest twine hypothesis
+        pip install pytest hypothesis
         pytest
 
     - name: Publish pypi package
       working-directory: python
       run: |
-        maturin publish -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
-      continue-on-error: true
+        pip install twine
+        twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }} target/wheels/*
+

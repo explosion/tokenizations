@@ -10,7 +10,7 @@ tag_prefix = "python/"
 
 [tool.poetry]
 name = "pytokenizations"
-version = "0.4.6-dev4"
+version = "0.4.6-dev5"
 description = ""
 authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 

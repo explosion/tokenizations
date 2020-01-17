@@ -57,14 +57,15 @@ impl Iterator for EditPathFromGrid {
     }
 }
 
+#[allow(clippy::many_single_char_names)]
 #[cfg(test)]
 fn get_shortest_edit_path_dp(a: &str, b: &str) -> EditPathFromGrid {
     let n = a.chars().count();
     let m = b.chars().count();
     let mut d = vec![vec![std::usize::MAX; m + 1]; n + 1];
-    d[0] = (0..(m + 1)).collect();
-    for i in 0..(n + 1) {
-        d[i][0] = i;
+    d[0] = (0..=m).collect();
+    for (i, e) in d.iter_mut().enumerate().take(n + 1) {
+        e[0] = i;
     }
     for (i, ca) in a.chars().enumerate() {
         for (j, cb) in b.chars().enumerate() {
@@ -82,7 +83,7 @@ fn get_shortest_edit_path_dp(a: &str, b: &str) -> EditPathFromGrid {
     }
 
     EditPathFromGrid {
-        d: d,
+        d,
         cur: (n, m),
         exhausted: false,
     }
@@ -115,6 +116,7 @@ impl<'a> Iterator for EditPathFromHashMap {
 /// Returns an iterator over the shotest path of the edit graph based on Myers' diff algorithm.
 ///
 /// See [An O(ND) Difference Algorithm and Its Variations](http://www.xmailserver.org/diff2.pdf)
+#[allow(clippy::many_single_char_names)]
 fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
     let a: Vec<char> = a.chars().collect();
     let b: Vec<char> = b.chars().collect();
@@ -124,8 +126,8 @@ fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
     let get_y = |x, k| x + bound - k;
     let mut v = vec![0; 2 * bound + 1];
     let mut nodes_map = HashMap::new();
-    'outer: for d in 0..(bound + 1) {
-        for k in ((bound - d)..(bound + d + 1)).step_by(2) {
+    'outer: for d in 0..=bound {
+        for k in ((bound - d)..=bound + d).step_by(2) {
             let (mut x, parent) = if d == 0 {
                 (0, Node::Root)
             } else if k == (bound - d) || k != (bound + d) && v[k - 1] < v[k + 1] {
@@ -139,8 +141,8 @@ fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
             nodes_map.insert(Node::P((x, y)), parent);
             while x < n && y < m && a[x] == b[y] {
                 nodes_map.insert(Node::P((x + 1, y + 1)), Node::P((x, y)));
-                x = x + 1;
-                y = y + 1;
+                x += 1;
+                y += 1;
             }
             v[k] = x;
             if x >= n && y >= m {
@@ -150,7 +152,7 @@ fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
     }
 
     EditPathFromHashMap {
-        nodes_map: nodes_map,
+        nodes_map,
         cur: Node::P((n, m)),
     }
 }

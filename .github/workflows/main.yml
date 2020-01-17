@@ -25,6 +25,16 @@ jobs:
           toolchain: nightly
           override: true
 
+    - name: Lint with RustFmt
+      uses: actions-rs/cargo@v1
+      with:
+        command: fmt
+
+    - name: Lint with Clippy
+      uses: actions-rs/cargo@v1
+      with:
+        command: clippy
+
     - name: Test with cargo
       uses: actions-rs/cargo@v1.0.1
       with:
@@ -38,7 +48,7 @@ jobs:
         pip install poetry
         poetry install
 
-    - name: build python package
+    - name: Build python package
       working-directory: python
       run: poetry run maturin develop
 

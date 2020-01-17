@@ -187,7 +187,9 @@ fn path_to_charmap(mut path: impl Iterator<Item = (usize, usize)>) -> (CharMap, 
 /// assert_eq!(c_b2a, vec![Some(0), None, Some(1), Some(2)]);
 /// ```
 pub fn get_charmap(a: &str, b: &str) -> (CharMap, CharMap) {
-    path_to_charmap(get_shortest_edit_path_myers(a, b))
+    let a = normalize(a);
+    let b = normalize(b);
+    path_to_charmap(get_shortest_edit_path_myers(&a, &b))
 }
 
 fn get_char2token(tokens: &[String]) -> Vec<usize> {
@@ -326,6 +328,12 @@ mod tests {
                 "a b",
                 vec![Some(0), None, Some(2)],
                 vec![Some(0), None, Some(2)],
+            ),
+            (
+                "２０００",
+                "2000",
+                vec![Some(0), Some(1), Some(2), Some(3)],
+                vec![Some(0), Some(1), Some(2), Some(3)],
             ),
         ];
         for (a, b, e_a2b, e_b2a) in testcases {

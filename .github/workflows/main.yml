@@ -104,7 +104,7 @@ jobs:
     - name: check test-pypi package
       working-directory: python
       run: |
-        pip install --extra-index-url https://testpypi.python.org/pypi pytokenizations
+        pip install --pre --extra-index-url https://testpypi.python.org/pypi pytokenizations
         pip install pytest hypothesis
         pytest
 

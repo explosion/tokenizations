@@ -87,27 +87,22 @@ jobs:
       working-directory: python
       run: |
         python -m pip install --upgrade pip
-        pip install poetry
-        poetry install
-
-    - name: Release build (without sdist)
-      # if: matrix.os != 'ubuntu-latest' || matrix.python-version != '3.7'
-      working-directory: python
-      run: poetry run maturin build --release --no-sdist -i python
+        pip install maturin
 
     - name: Publish test-pypi package 
       working-directory: python
       run: |
-        poetry run twine upload --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }} target/wheels/*
+        maturin publish --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
     - name: check test-pypi package
       working-directory: python
       run: |
         pip install --extra-index-url https://testpypi.python.org/pypi pytokenizations
         pip install pytest twine hypothesis
+        pytest
 
     - name: Publish pypi package
       working-directory: python
       run: |
-        twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }} target/wheels/*
+        maturin publish -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
 

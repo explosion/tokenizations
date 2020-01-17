@@ -98,7 +98,7 @@ jobs:
       working-directory: python
       run: |
         maturin publish --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
-        continue-on-error: true
+      continue-on-error: true
 
     - name: check test-pypi package
       working-directory: python
@@ -111,4 +111,4 @@ jobs:
       working-directory: python
       run: |
         maturin publish -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
-        continue-on-error: true
+      continue-on-error: true

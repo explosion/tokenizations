@@ -1,4 +1,5 @@
 # Tokenizations alignment library for Rust and Python, written in Rust
+[![creates.io](https://img.shields.io/crates/v/tokenizations.svg)](https://crates.io/crates/tokenizations)
 
 ## Installation
 

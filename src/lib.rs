@@ -83,7 +83,7 @@ fn get_shortest_edit_path_dp(a: &str, b: &str) -> EditPathFromGrid {
     }
 
     EditPathFromGrid {
-        d,
+        d: d,
         cur: (n, m),
         exhausted: false,
     }

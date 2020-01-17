@@ -101,13 +101,6 @@ jobs:
       run: |
         maturin publish -i python --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
-    - name: check test-pypi package
-      working-directory: python
-      run: |
-        pip install --pre --extra-index-url https://testpypi.python.org/pypi pytokenizations
-        pip install pytest hypothesis
-        pytest
-
     - name: Publish pypi package
       working-directory: python
       run: |

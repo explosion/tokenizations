@@ -36,7 +36,7 @@ def test_get_alignments(input_, expected):
     "input_,expected", [(("foo", "fo0"), ([0, 1, None], [0, 1, None]))]
 )
 def test_get_charmap(input_, expected):
-    output = tokenizations.get_charmap(*input_)
+    tokenizations.get_charmap(*input_)
 
 
 @given(st.text(), st.text())

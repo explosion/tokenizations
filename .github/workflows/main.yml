@@ -83,14 +83,32 @@ jobs:
           toolchain: nightly
           override: true
 
-    - name: Install maturin
+    - name: Install Python dependencies
       working-directory: python
       run: |
         python -m pip install --upgrade pip
         pip install maturin
 
+    - name: Build python package
+      working-directory: python
+      run: |
+        maturin build
+
+    - name: Publish test-pypi package 
+      working-directory: python
+      run: |
+        maturin publish --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
+        continue-on-error: true
+
+    - name: check test-pypi package
+      working-directory: python
+      run: |
+        pip install --extra-index-url https://testpypi.python.org/pypi pytokenizations
+        pip install pytest twine hypothesis
+        pytest
+
     - name: Publish pypi package
       working-directory: python
       run: |
         maturin publish -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
-
+        continue-on-error: true

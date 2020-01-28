@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [versionup]
 tag = true
-commit = true
+commit = false
 files = [ "src/lib.rs", "Cargo.toml",]
 tag_prefix = "python/"
 

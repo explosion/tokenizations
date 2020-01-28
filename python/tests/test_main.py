@@ -1,6 +1,7 @@
 import pytest
-from hypothesis import strategies as st, given
 import tokenizations
+from hypothesis import given
+from hypothesis import strategies as st
 
 
 @given(st.lists(st.text()), st.lists(st.text()))

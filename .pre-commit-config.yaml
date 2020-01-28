@@ -22,6 +22,7 @@ repos:
     - id: check-symlinks
     - id: flake8
       exclude: scripts/
+      args: ["--config", "python/setup.cfg"]
 
   - repo: git@github.com:humitos/mirrors-autoflake.git
     rev: v1.1

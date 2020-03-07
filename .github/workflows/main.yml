@@ -7,6 +7,7 @@ on:
 
 jobs:
   test:
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -73,7 +74,7 @@ jobs:
         cargo publish
 
   publish-python:
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/') && contains(github.event.head_commit.message, '[skip ci]') == false
     needs: test
     runs-on: ${{ matrix.os }}
     strategy:

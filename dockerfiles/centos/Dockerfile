@@ -12,9 +12,8 @@ RUN pyenv install 3.8.2 && \
     pyenv install 3.6.10 && \
     pyenv install 3.5.9 && \
     pyenv global 3.5.9 3.6.10 3.7.6 3.8.2 && \
-    python3 -m pip install maturin tox --user && \
+    python3 -m pip install maturin poetry tox --user && \
     # maturin requires nightly rust
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs  > install.sh && sh install.sh -y && \
     rustup default nightly
-RUN maturin develop
 RUN tox

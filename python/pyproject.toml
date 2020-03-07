@@ -1,6 +1,6 @@
 [build-system]
-requires = [ "maturin",]
-build-backend = "maturin"
+requires = [ "poetry>=1.0.0",]
+build-backend = "poetry.masonry.api"
 
 [versionup]
 tag = true
@@ -13,6 +13,9 @@ name = "pytokenizations"
 version = "0.4.9"
 description = ""
 authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
+packages = [
+    { include = "tokenizations" },
+]
 
 [tool.poetry.dependencies]
 python = ">=3.5"

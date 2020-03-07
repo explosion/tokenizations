@@ -52,7 +52,7 @@ jobs:
 
     - name: Build python package
       working-directory: python
-      run: maturin develop
+      run: poetry run maturin develop
 
     - name: Test with pytest
       working-directory: python

@@ -23,6 +23,9 @@ jobs:
     - name: Install rust
       run:  |
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly --profile minimal -y
+        echo $HOME
+        echo $PATH
+        ls $HOME/.cargo/bin
         rustup default nightly
 
     - name: Test rust lib

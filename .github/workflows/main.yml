@@ -100,7 +100,7 @@ jobs:
 
     - name: Build
       working-directory: python
-      run: maturin build --no-sdist --release --strip -i python${{ matrix.python-version }}
+      run: maturin build --no-sdist --release --strip -i python
 
     - name: Publish test pypi
       working-directory: python

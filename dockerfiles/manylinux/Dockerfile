@@ -8,4 +8,5 @@ RUN python3 -m pip install maturin poetry tox auditwheel --user && \
 
 WORKDIR /app/python
 RUN tox
-RUN maturin build --no-sdist --release --strip && python3 -m auditwheel repair target/wheels/*.whl
+RUN maturin build --no-sdist --release --strip 
+RUN find target/ -type f -name *whl | xargs -I {} python3 -m auditwheel repair {}

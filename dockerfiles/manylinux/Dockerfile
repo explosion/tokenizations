@@ -3,7 +3,7 @@ COPY . /app
 ENV HOME /root
 ENV PATH $HOME/.cargo/bin:$HOME/.local/bin:$PATH:/opt/python/cp35-cp35m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp38-cp38/bin
 RUN python3 -m pip install maturin poetry tox auditwheel --user && \
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs  > install.sh && sh install.sh -y && \
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly --profile minimal -y && \
     rustup default nightly
 
 WORKDIR /app/python

@@ -1,0 +1,26 @@
+name: build manylinux
+
+on: 
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: centos:7
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.pyenv/bin
+        HOME: /root
+    steps:
+      - run: |
+          echo $USER
+          echo $HOME
+          uname -a
+      - run: |
+          yum update -y 
+          yum install -y git gcc make zlib-devel
+          curl https://pyenv.run | bash
+          yum install @development zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel xz xz-devel libffi-devel findutils -y
+          pyenv install 3.8.2
+      - run: python3 -m pip install pytokenizations
+      - run: python3 -c "import tokenizations"

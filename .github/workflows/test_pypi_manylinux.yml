@@ -1,4 +1,4 @@
-name: build manylinux
+name: test pypi manylinux
 
 on: 
   push:

@@ -21,4 +21,4 @@ jobs:
       PYTHON: python${{ matrix.python-version }}
     steps:
       - run: $PYTHON -m pip install pytokenizations --pre
-      - run: $PYTHON -c 'import tokenizations; tokenizations.get_alignment(["a"],["a"])'
+      - run: $PYTHON -c 'import tokenizations; tokenizations.get_alignments(["a"],["a"])'

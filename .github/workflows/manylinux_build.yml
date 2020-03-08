@@ -73,6 +73,4 @@ jobs:
       working-directory: python
       run: |
         pip install twine
-        twine upload target/wheels/*whl -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }} target/wheels/*
-
-
+        twine upload target/wheels/*whl -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}

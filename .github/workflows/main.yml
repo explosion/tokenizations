@@ -1,4 +1,4 @@
-name: Test
+name: Test and Deploy
 
 on: 
   push:
@@ -72,7 +72,7 @@ jobs:
         cargo login ${{ secrets.CRATES_PASS }}
         cargo publish
 
-  publish-python:
+  publish-python-wheels:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
     needs: test
     runs-on: ${{ matrix.os }}
@@ -95,23 +95,56 @@ jobs:
       working-directory: python
       run: |
         python -m pip install --upgrade pip
-        pip install maturin
+        pip install maturin twine
 
-    - name: Publish (without sdist)
-      if: matrix.os != 'ubuntu-latest' || matrix.python-version != '3.7'
+    - name: Build
       working-directory: python
       run: |
-        maturin publish -i python --no-sdist --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
+        maturin build --no-sdist --release --strip 
 
-    - name: Publish
-      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7'
+    - name: Publish test pypi
       working-directory: python
       run: |
-        maturin publish -i python --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
+        twine upload target/wheels/*whl --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
-    - name: Publish pypi package
+    - name: Publish pypi
       working-directory: python
       run: |
         pip install twine
-        twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }} target/wheels/*
+        twine upload target/wheels/*whl -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
+
+  publish-python-sdist:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - uses: actions-rs/toolchain@v1
+      with:
+          toolchain: nightly
+          override: true
+
+    - name: Install publishment tool
+      working-directory: python
+      run: |
+        python -m pip install --upgrade pip
+        pip install maturin twine
+
+    - name: Build sdist
+      working-directory: python
+      run: maturin sdist
+
+    - name: Publish test pypi
+      working-directory: python
+      run: |
+        twine upload target/wheels/*.tar.gz --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
+
+    - name: Publish pypi
+      working-directory: python
+      run: |
+        pip install twine
+        twine upload target/wheels/*.tar.gz -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
 

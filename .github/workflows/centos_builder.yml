@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: quay.io/pypa/manylinux1_x86_64
+    - uses: quay.io/pypa/manylinux1_x86_64@latest
     - run: echo whoo
     # - run: docker build -f dockerfiles/centos/Dockerfile -t tokenizations .
     # - run: docker run tokenizations maturin publish --manylinux off ---no-sdist --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}

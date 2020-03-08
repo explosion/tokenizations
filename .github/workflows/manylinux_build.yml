@@ -21,7 +21,7 @@ jobs:
     #     HOME: /root
     #     USER: root
     env:
-      PATH: /home/runner/.local/bin:/usr/share/rust/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+      PATH: /home/runner/.local/bin:/usr/share/rust/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/opt/python/${{ matrix.pythonpath }}/bin
     steps:
     - uses: docker://quay.io/pypa/manylinux1_x86_64:2020-03-07-9c5ba95
       # env:
@@ -38,8 +38,8 @@ jobs:
     - name: Install dependencies with pip
       working-directory: python
       run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install poetry maturin --user
+        pip3 install --upgrade pip
+        pip3 install poetry maturin --user
         poetry install
 
     - name: Build python package

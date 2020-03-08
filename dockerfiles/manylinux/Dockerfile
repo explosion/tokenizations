@@ -10,4 +10,4 @@ WORKDIR /app
 RUN cargo test
 WORKDIR /app/python
 RUN tox
-RUN maturin build --no-sdist --release --strip && find target/ -type f -name *whl | xargs -I {} python3 -m auditwheel repair {}
+RUN maturin build --no-sdist --release --strip && find target/ -type f -name "*whl" -exec python3 -m auditwheel repair {} +

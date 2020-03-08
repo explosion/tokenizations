@@ -8,4 +8,4 @@ RUN python3 -m pip install maturin poetry tox --user && \
 
 WORKDIR /app/python
 RUN tox
-RUN maturin build --no-sdist --release --strip && python3 -m auditwheel repair target/wheels/orjson*.whl
+RUN maturin build --no-sdist --release --strip && python3 -m auditwheel repair target/wheels/*.whl

@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [macos-latest, windows-latest]
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }}
@@ -46,7 +46,7 @@ jobs:
       working-directory: python
       run: |
         python -m pip install --upgrade pip
-        pip install poetry
+        pip install poetry maturin
         poetry install
 
     - name: Build python package
@@ -104,14 +104,11 @@ jobs:
 
     - name: Publish test pypi
       working-directory: python
-      run: |
-        twine upload target/wheels/*whl --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
+      run: twine upload target/wheels/*whl --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
     - name: Publish pypi
       working-directory: python
-      run: |
-        pip install twine
-        twine upload target/wheels/*whl -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
+      run: twine upload target/wheels/*whl -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
 
   publish-python-sdist:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
@@ -145,6 +142,5 @@ jobs:
     - name: Publish pypi
       working-directory: python
       run: |
-        pip install twine
         twine upload target/wheels/*.tar.gz -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}
 

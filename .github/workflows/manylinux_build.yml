@@ -9,18 +9,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pythonpath: 
-          - cp35-cp35m
-          - cp36-cp36m
-          - cp37-cp37m
-          - cp38-cp38
+        python-version: 
+          - 3.5
+          - 3.6
+          - 3.7
+          - 3.8
     container: 
       image: quay.io/pypa/manylinux1_x86_64:2020-03-07-9c5ba95
       env:
-        PATH: /root/.cargo/bin:/root/.local/bin:/opt/python/${{ matrix.pythonpath }}/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp38-cp38/bin:/opt/rh/devtoolset-2/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        PATH: /root/.cargo/bin:/root/.local/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp38-cp38/bin:/opt/rh/devtoolset-2/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/python/cp35-cp35m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp38-cp38/bin
       options: --user root
     env:
       HOME: /root
+      PYTHON: python${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v1
     - name: Install rust
@@ -37,10 +38,11 @@ jobs:
     - name: Install dependencies with pip
       working-directory: python
       run: |
-        which python3
-        python3 -m pip install --upgrade pip
-        python3 -m pip install poetry maturin
+        $PYTHON -m pip install --upgrade pip
+        $PYTHON -m venv .venv
+        $PYTHON -m pip install poetry maturin
         poetry install
+        poetry run which python
 
     - name: Build python package
       working-directory: python
@@ -53,14 +55,14 @@ jobs:
     - name: Install publishment tool
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
       working-directory: python
-      run: pip install twine auditwheel
+      run: $PYTHON -m pip install twine auditwheel
 
     - name: Build
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
       working-directory: python
       run: |
-        maturin build --no-sdist --release --strip 
-        find target/ -type f -name "*whl" -exec python3 -m auditwheel repair {} \;
+        maturin build --no-sdist --release --strip -i $PYTHON
+        find target/ -type f -name "*whl" -exec $PYTHON -m auditwheel repair {} \;
 
     - name: Publish test pypi
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
@@ -72,5 +74,4 @@ jobs:
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
       working-directory: python
       run: |
-        pip install twine
         twine upload target/wheels/*whl -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PASS }}

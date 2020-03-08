@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: docker:centos:7
+    container: docker://centos:7
     steps:
       - run: |
           echo $USER

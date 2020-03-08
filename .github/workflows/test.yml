@@ -1,0 +1,14 @@
+name: build manylinux
+
+on: 
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      uses: docker://quay.io/pypa/manylinux1_x86_64:2020-03-07-9c5ba95
+      run: |
+        echo $USER
+        echo $HOME
+        uname -a

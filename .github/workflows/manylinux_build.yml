@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    # if: contains(github.event.head_commit.message, '[skip ci]') == false
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,8 +31,8 @@ jobs:
         ls $HOME/.cargo/bin
         rustup default nightly
 
-    # - name: Test rust lib
-    #   run: cargo test
+    - name: Test rust lib
+      run: cargo test
 
     - name: Install dependencies with pip
       working-directory: python

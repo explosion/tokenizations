@@ -6,7 +6,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: centos:7
+    container: 
+      image: centos:7
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.pyenv/bin
+        HOME: /root
     steps:
       - run: |
           echo $USER

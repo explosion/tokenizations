@@ -58,7 +58,7 @@ jobs:
       working-directory: python
       run: |
         maturin build --no-sdist --release --strip 
-        find target/ -type f -name "*whl" -exec python3 -m auditwheel repair {} +
+        find target/ -type f -name "*whl" -exec python3 -m auditwheel repair {} \;
 
     - name: Publish test pypi
       working-directory: python

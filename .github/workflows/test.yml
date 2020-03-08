@@ -10,5 +10,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - uses: quay.io/pypa/manylinux1_x86_64:2020-03-07-9c5ba95
+    - uses: quay.io/pypa/manylinux1_x86_64@2020-03-07-9c5ba95
     - run: echo foo

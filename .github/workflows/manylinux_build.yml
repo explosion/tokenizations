@@ -19,15 +19,15 @@ jobs:
       env:
         PATH: $HOME/.cargo/bin:/root/.local/bin:/opt/python/${{ matrix.pythonpath }}/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp38-cp38/bin:/opt/rh/devtoolset-2/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
-    - name: test
+    - uses: actions/checkout@v1
+    - name: Test
       run: |
       echo $HOME
       echo $USER
       echo $PATH
     - run: exit 0
-    - uses: actions/checkout@v1
     - name: Install rust
-      run:  |
+      run: |
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly --profile minimal -y
         echo $HOME
         echo $PATH

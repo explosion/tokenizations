@@ -55,8 +55,9 @@ jobs:
       run: pip install twine
 
     - name: Build
+      working-directory: python
       run: |
-        poetry run maturin build --no-sdist --release --strip 
+        maturin build --no-sdist --release --strip 
         find target/ -type f -name "*whl" -exec python3 -m auditwheel repair {} +
 
     - name: Publish test pypi

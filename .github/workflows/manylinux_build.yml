@@ -51,25 +51,25 @@ jobs:
       run: poetry run pytest tests
 
     - name: Install publishment tool
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/') && contains(github.event.head_commit.message, '[skip ci]') == false
+      # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
       working-directory: python
       run: pip install twine auditwheel
 
     - name: Build
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/') && contains(github.event.head_commit.message, '[skip ci]') == false
+      # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
       working-directory: python
       run: |
         maturin build --no-sdist --release --strip 
         find target/ -type f -name "*whl" -exec python3 -m auditwheel repair {} \;
 
     - name: Publish test pypi
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/') && contains(github.event.head_commit.message, '[skip ci]') == false
+      # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
       working-directory: python
       run: |
         twine upload target/wheels/*whl --repository-url https://test.pypi.org/legacy/ -u ${{ secrets.TEST_PYPI_USER }} -p ${{ secrets.TEST_PYPI_PASS }}
 
     - name: Publish pypi
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/') && contains(github.event.head_commit.message, '[skip ci]') == false
+      # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/python/')
       working-directory: python
       run: |
         pip install twine

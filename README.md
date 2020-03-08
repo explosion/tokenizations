@@ -3,35 +3,8 @@
 [![pypi](https://img.shields.io/pypi/v/pytokenizations.svg)](https://pypi.org/project/pytokenizations/)
 [![Actions Status](https://github.com/tamuhey/tokenizations/workflows/Test/badge.svg)](https://github.com/tamuhey/tokenizations/actions)
 
-## Installation
-
-```bash
-$ pip install pytokenizations
-```
-
-## Usage
-
-Get an alignment map for two different tokenizations:
-
-```python
-import tokenizations
-tokens_a = ["New York"]
-tokens_b = ["New", "York"]
-a2b = [[0, 1]]
-b2a = [[0], [0]]
-assert tokenizations.get_alignments(tokens_a, tokens_b) == (a2b, b2a)
-```
-
-`a2b[i]` is tokens_a list representing the alignment from `tokens_a` to `tokens_b`.   
-You can get the alignments for "dirty" tokens:
-
-```python
-tokens_a = ["げん", "ご"]
-tokens_b = ["けんこ"] # all accents are dropped (が -> か, ご -> こ)
-a2b = [[0], [0]]
-b2a = [[0, 1]]
-assert tokenizations.get_alignments(tokens_a, tokens_b) == (a2b, b2a)
-```
+Rust document: [docs.rs](https://docs.rs/tokenizations/0.2.2/tokenizations/)  
+Python document: [python/README.md](./python/README.md)
 
 ## Algorithm
 

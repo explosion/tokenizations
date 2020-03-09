@@ -1,4 +1,4 @@
-name: test pypi manylinux
+name: check-pypi-manylinux
 
 on: 
   schedule:
@@ -16,18 +16,12 @@ jobs:
           - manylinux
         python-version: [3.5, 3.6, 3.7, 3.8]
     env:
-      DOCKERFILE: dockerfiles/ci/${{ matrix.container }}
+      DOCKERFILE: dockerfiles/ci/${{ matrix.container }}/Dockerfile
       PYTHON: python${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v1
     - run: docker login -u tamuhey -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
-    - run: |
-        pwd
-        ls
-        ls dockerfiles
-        ls dockerfiles/ci
-        ls dockerfiles/ci/centos
-        docker build -f $DOCKERFILE -t img .
+    - run: docker build -f $DOCKERFILE -t img .
     - run: docker run sh -c "$PYTHON -m pip install pytokenizations && $PYTHON -c 'import '"
     - run: which python3
     - run: |

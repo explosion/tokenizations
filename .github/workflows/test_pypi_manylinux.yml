@@ -1,0 +1,25 @@
+name: check-pypi-manylinux
+
+on: 
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+
+jobs:
+  build:
+    if: contains(github.event.head_commit.message, '[run pip test]') == true || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        container: 
+          - centos
+          - manylinux
+        python-version: [3.5, 3.6, 3.7, 3.8]
+    env:
+      DOCKERFILE: dockerfiles/ci/${{ matrix.container }}/Dockerfile
+      PYTHON: python${{ matrix.python-version }}
+    steps:
+    - uses: actions/checkout@v1
+    - run: docker login -u tamuhey -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
+    - run: docker build -f $DOCKERFILE -t img .
+    - run: docker run img sh -c "$PYTHON -m pip install pytokenizations --pre && $PYTHON -c 'import tokenizations; print(tokenizations.get_alignments([\"a\"], [\"a\"]))'"

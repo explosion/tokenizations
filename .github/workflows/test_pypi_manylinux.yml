@@ -19,10 +19,10 @@ jobs:
       DOCKERFILE: dockerfiles/ci/${{ matrix.container }}
       PYTHON: python${{ matrix.python-version }}
     steps:
-    - uses: docker://docker.pkg.github.com/tamuhey/tokenizations/centos-python:7
-    # - uses: actions/checkout@v1
-    # - run: docker build -f $DOCKERFILE -t img .
-    # - run: docker run sh -c "$PYTHON -m pip install pytokenizations && $PYTHON -c 'import '"
+    - uses: actions/checkout@v1
+    - run: docker login -u tamuhey -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
+    - run: docker build -f $DOCKERFILE -t img .
+    - run: docker run sh -c "$PYTHON -m pip install pytokenizations && $PYTHON -c 'import '"
     - run: which python3
     - run: |
         python3 -m pip install pytokenizations

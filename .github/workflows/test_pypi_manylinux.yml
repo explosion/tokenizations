@@ -9,20 +9,21 @@ jobs:
   build:
     if: contains(github.event.head_commit.message, '[run pip test]') == true || github.event_name == 'schedule'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        image: 
-          - quay.io/pypa/manylinux1_x86_64:2020-03-07-9c5ba95
-          - docker.pkg.github.com/tamuhey/tokenizations/centos-python:7
-        python-version: [3.5, 3.6, 3.7, 3.8]
-        include:
-          - image: quay.io/pypa/manylinux1_x86_64:2020-03-07-9c5ba95 
-            PATH: /root/.cargo/bin:/root/.local/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp38-cp38/bin:/opt/rh/devtoolset-2/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/python/cp35-cp35m/bin:/opt/python/cp36-cp36m/bin:/opt/python/cp37-cp37m/bin:/opt/python/cp38-cp38/bin
-    container: 
-      image: ${{ matrix.image }}
-    env:
-      PATH: ${{ matrix.PATH }}
-      PYTHON: python${{ matrix.python-version }}
+    # strategy:
+    #   matrix:
+    #     container: 
+    #       - centos
+    #       - manylinux
+    #     python-version: [3.5, 3.6, 3.7, 3.8]
+    # env:
+    #   DOCKERFILE: dockerfiles/ci/${{ matrix.container }}
+    #   PYTHON: python${{ matrix.python-version }}
     steps:
-      - run: $PYTHON -m pip install pytokenizations --pre
-      - run: $PYTHON -c 'import tokenizations; tokenizations.get_alignments(["a"],["a"])'
+    # - uses: actions/checkout@v1
+    # - run: docker build -f $DOCKERFILE -t img .
+    # - run: docker run sh -c "$PYTHON -m pip install pytokenizations && $PYTHON -c 'import '"
+    - run: |
+        python3 -m pip install pytokenizations
+        python3 -c 'import tokenizations; tokenizations.get_alignments(["a","a"])'
+      uses: docker://docker.pkg.github.com/tamuhey/tokenizations/centos-python:7
+

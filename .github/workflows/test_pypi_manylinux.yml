@@ -21,7 +21,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - run: docker login -u tamuhey -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
-    - run: docker build -f $DOCKERFILE -t img .
+    - run: |
+        pwd
+        ls
+        ls dockerfiles
+        ls dockerfiles/ci
+        ls dockerfiles/ci/centos
+        docker build -f $DOCKERFILE -t img .
     - run: docker run sh -c "$PYTHON -m pip install pytokenizations && $PYTHON -c 'import '"
     - run: which python3
     - run: |

@@ -22,9 +22,4 @@ jobs:
     - uses: actions/checkout@v1
     - run: docker login -u tamuhey -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
     - run: docker build -f $DOCKERFILE -t img .
-    - run: docker run sh -c "$PYTHON -m pip install pytokenizations && $PYTHON -c 'import '"
-    - run: which python3
-    - run: |
-        python3 -m pip install pytokenizations
-        python3 -c 'import tokenizations; tokenizations.get_alignments(["a","a"])'
-
+    - run: docker run img sh -c "$PYTHON -m pip install pytokenizations && $PYTHON -c 'import '"

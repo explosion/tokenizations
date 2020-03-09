@@ -1,8 +1,6 @@
 FROM centos:7
 ENV HOME /root
 ENV PATH $HOME/.pyenv/bin:$HOME/.pyenv/shims:$HOME/.cargo/bin:$HOME/.local/bin:$PATH
-COPY . /app
-WORKDIR /app/python
 RUN yum update -y && yum install -y git gcc make zlib-devel && \
     curl https://pyenv.run | bash
 # pyenv prequisits. see https://github.com/pyenv/pyenv/wiki/common-build-problems

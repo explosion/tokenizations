@@ -9,21 +9,22 @@ jobs:
   build:
     if: contains(github.event.head_commit.message, '[run pip test]') == true || github.event_name == 'schedule'
     runs-on: ubuntu-latest
-    # strategy:
-    #   matrix:
-    #     container: 
-    #       - centos
-    #       - manylinux
-    #     python-version: [3.5, 3.6, 3.7, 3.8]
-    # env:
-    #   DOCKERFILE: dockerfiles/ci/${{ matrix.container }}
-    #   PYTHON: python${{ matrix.python-version }}
+    strategy:
+      matrix:
+        container: 
+          - centos
+          - manylinux
+        python-version: [3.5, 3.6, 3.7, 3.8]
+    env:
+      DOCKERFILE: dockerfiles/ci/${{ matrix.container }}
+      PYTHON: python${{ matrix.python-version }}
     steps:
+    - uses: docker://docker.pkg.github.com/tamuhey/tokenizations/centos-python:7
     # - uses: actions/checkout@v1
     # - run: docker build -f $DOCKERFILE -t img .
     # - run: docker run sh -c "$PYTHON -m pip install pytokenizations && $PYTHON -c 'import '"
+    - run: which python3
     - run: |
         python3 -m pip install pytokenizations
         python3 -c 'import tokenizations; tokenizations.get_alignments(["a","a"])'
-      uses: docker://docker.pkg.github.com/tamuhey/tokenizations/centos-python:7
 

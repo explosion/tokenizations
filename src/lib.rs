@@ -20,6 +20,8 @@ type Point = (usize, usize);
 
 #[cfg(test)]
 struct EditPathFromGrid {
+    // This struct is only for testing
+    // Inefficient but simple algorithm
     d: Vec<Vec<usize>>,
     cur: Point,
     exhausted: bool,
@@ -27,7 +29,7 @@ struct EditPathFromGrid {
 
 #[cfg(test)]
 impl Iterator for EditPathFromGrid {
-    type Item = (usize, usize);
+    type Item = Point;
     fn next(&mut self) -> Option<Self::Item> {
         if self.exhausted {
             return None;
@@ -60,7 +62,7 @@ impl Iterator for EditPathFromGrid {
 
 #[allow(clippy::many_single_char_names)]
 #[cfg(test)]
-fn get_shortest_edit_path_dp(a: &str, b: &str) -> EditPathFromGrid {
+fn get_shortest_edit_path_grid(a: &str, b: &str) -> EditPathFromGrid {
     let n = a.chars().count();
     let m = b.chars().count();
     let mut d = vec![vec![std::usize::MAX; m + 1]; n + 1];
@@ -309,7 +311,7 @@ mod tests {
     }
     #[quickcheck]
     fn randomcheck_myers_with_dp(a: String, b: String) {
-        let v = path_to_charmap(get_shortest_edit_path_dp(&a, &b));
+        let v = path_to_charmap(get_shortest_edit_path_grid(&a, &b));
         let w = path_to_charmap(get_shortest_edit_path_myers(&a, &b));
         assert_eq!(v, w)
     }

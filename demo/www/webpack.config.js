@@ -6,7 +6,7 @@ const dist = path.resolve(__dirname, "dist");
 
 module.exports = {
   mode: "development",
-  entry: src + "/index.jsx",
+  entry: src + "/index.tsx",
   output: {
     path: dist,
     filename: "bundle.js"
@@ -14,11 +14,16 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.ts(x?)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: "ts-loader"
         }
+      },
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        loader: "source-map-loader"
       }
     ]
   },

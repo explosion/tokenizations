@@ -55,8 +55,8 @@
   "dependencies": {
     "@material-ui/core": "^4.9.11",
     "react": "^16.13.1",
-    "react-archer": "^1.5.1",
     "react-dom": "^16.13.1",
+    "react-lineto": "^3.1.4",
     "react-scripts": "3.4.1",
     "tokenization": "file:../pkg",
     "typescript": "~3.7.2"

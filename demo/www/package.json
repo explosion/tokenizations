@@ -7,7 +7,7 @@
     "create-wasm-app": ".bin/create-wasm-app.js"
   },
   "scripts": {
-    "start": "webpack --mode development",
+    "start": "webpack-dev-server",
     "build": "webpack --mode production"
   },
   "repository": {
@@ -53,10 +53,12 @@
     "webpack-dev-server": "^3.1.5"
   },
   "dependencies": {
-    "tokenization": "file:../pkg",
+    "@material-ui/core": "^4.9.11",
     "react": "^16.13.1",
+    "react-archer": "^1.5.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
+    "tokenization": "file:../pkg",
     "typescript": "~3.7.2"
   }
 }

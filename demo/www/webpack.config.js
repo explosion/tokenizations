@@ -6,10 +6,10 @@ const dist = path.resolve(__dirname, "dist");
 
 module.exports = {
   mode: "development",
-  entry: src + "/index.tsx",
+  entry: src + "/bootstrap.ts",
   output: {
     path: dist,
-    filename: "bundle.js"
+    filename: "bundle.js",
   },
   module: {
     rules: [
@@ -17,23 +17,23 @@ module.exports = {
         test: /\.ts(x?)$/,
         exclude: /node_modules/,
         use: {
-          loader: "ts-loader"
-        }
+          loader: "ts-loader",
+        },
       },
       {
         enforce: "pre",
         test: /\.js$/,
-        loader: "source-map-loader"
-      }
-    ]
+        loader: "source-map-loader",
+      },
+    ],
   },
   resolve: {
-    extensions: [".js", ".jsx"]
+    extensions: [".js", ".jsx"],
   },
   plugins: [
     new HtmlWebPackPlugin({
-      template: src + '/index.html',
-      filename: 'index.html'
-    })
-  ]
+      template: src + "/index.html",
+      filename: "index.html",
+    }),
+  ],
 };

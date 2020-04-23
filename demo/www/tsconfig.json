@@ -3,9 +3,10 @@
         "outDir": "./dist/",
         "sourceMap": true,
         "noImplicitAny": true,
-        "module": "commonjs",
+        "module": "ESNext",
         "target": "es6",
         "jsx": "react",
         "esModuleInterop": true,
+        "moduleResolution": "node"
     }
 }

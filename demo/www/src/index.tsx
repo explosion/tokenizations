@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { ArcherContainer, ArcherElement } from "react-archer";
-import { get_alignment } from "tokenization";
 import {
   Container,
   Paper,
@@ -27,7 +26,16 @@ export const Index = () => {
   const [inputB, setInputB] = useState("[]");
   const [tokensA, errorA] = tryParse(inputA);
   const [tokensB, errorB] = tryParse(inputB);
-  const [a2b, b2a] = get_alignment(tokensA, tokensB);
+  const [tokenization, setTokenization] = useState(null);
+  const loadWasm = async () => setTokenization(await import("tokenization"));
+
+  useEffect(() => {
+    loadWasm();
+  });
+  const [a2b, b2a] = tokenization
+    ? tokenization.get_alignment(tokensA, tokensB)
+    : [[], []];
+  console.log(a2b);
   return (
     <Container>
       <Grid container>

@@ -6,7 +6,7 @@ const dist = path.resolve(__dirname, "dist");
 
 module.exports = {
   mode: "development",
-  entry: src + "/bootstrap.ts",
+  entry: src + "/index.tsx",
   output: {
     path: dist,
     filename: "bundle.js",
@@ -28,7 +28,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx"],
+    extensions: [".js", ".jsx", ".ts", "tsx"],
   },
   plugins: [
     new HtmlWebPackPlugin({

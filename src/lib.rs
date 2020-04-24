@@ -12,8 +12,8 @@ use unicode_normalization::UnicodeNormalization;
 
 pub type Alignment = Vec<Vec<usize>>;
 
-fn normalize<S: AsRef<str>>(text: S) -> String {
-    text.as_ref().to_lowercase().nfkd().collect()
+fn normalize(text: &str) -> String {
+    text.to_lowercase().nfkd().collect()
 }
 
 type Point = (usize, usize);
@@ -177,11 +177,11 @@ fn path_to_charmap(mut path: impl Iterator<Item = (usize, usize)>) -> (CharMap, 
     (a2b, b2a)
 }
 
-fn get_char2token(tokens: &[String]) -> Vec<usize> {
-    let mut c2t = vec![0; tokens.join("").chars().count()];
+fn get_char2token<T: AsRef<str>>(tokens: &[T]) -> Vec<usize> {
+    let mut c2t = vec![0; tokens.iter().map(|s| s.as_ref().len()).sum()];
     let mut cur = 0;
     for (i, token) in tokens.iter().enumerate() {
-        for _ in 0..token.chars().count() {
+        for _ in 0..token.as_ref().chars().count() {
             c2t[cur] = i;
             cur += 1;
         }

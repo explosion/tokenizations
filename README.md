@@ -3,6 +3,7 @@
 [![pypi](https://img.shields.io/pypi/v/pytokenizations.svg)](https://pypi.org/project/pytokenizations/)
 [![Actions Status](https://github.com/tamuhey/tokenizations/workflows/Test/badge.svg)](https://github.com/tamuhey/tokenizations/actions)
 
+Demo: [demo](https://tamuhey.github.io/tokenizations/)
 Rust document: [docs.rs](https://docs.rs/tokenizations/0.2.2/tokenizations/)  
 Python document: [python/README.md](./python/README.md)
 

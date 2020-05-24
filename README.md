@@ -7,8 +7,8 @@
 
 Demo: [demo](https://tamuhey.github.io/tokenizations/)  
 Rust document: [docs.rs](https://docs.rs/tokenizations/0.2.2/tokenizations/)  
-Python document: [python/README.md](./python/README.md)
-Blog post: [gist](https://gist.github.com/tamuhey/af6cbb44a703423556c32798e1e1b704)
+Python document: [python/README.md](./python/README.md)  
+Blog post: [How to calculate the alignment between BERT and spaCy tokens effectively and robustly](https://gist.github.com/tamuhey/af6cbb44a703423556c32798e1e1b704)
 
 ## Overview
 

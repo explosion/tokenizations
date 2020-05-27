@@ -178,15 +178,19 @@ fn path_to_charmap(mut path: impl Iterator<Item = (usize, usize)>) -> (CharMap, 
 }
 
 fn get_char2token<T: AsRef<str>>(tokens: &[T]) -> Vec<usize> {
-    let mut c2t = vec![0; tokens.iter().map(|s| s.as_ref().len()).sum()];
+    let token_lengths = tokens
+        .iter()
+        .map(|s| s.as_ref().chars().count())
+        .collect::<Vec<_>>();
+    let mut ret = vec![0; token_lengths.iter().sum()];
     let mut cur = 0;
-    for (i, token) in tokens.iter().enumerate() {
-        for _ in 0..token.as_ref().chars().count() {
-            c2t[cur] = i;
+    for (i, &l) in token_lengths.iter().enumerate() {
+        for _ in 0..l {
+            ret[cur] = i;
             cur += 1;
         }
     }
-    c2t
+    ret
 }
 
 // Returns tokenization alignment from ta to tb.
@@ -244,6 +248,8 @@ pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment)
     let bt2at = get_alignment(b.len(), &b2a, &bc2t, &ac2t);
     (at2bt, bt2at)
 }
+
+// pub fn get_original_span<S: AsRef<str>>(tokens: &[S], original_text: &str) -> Vec<(usize, usize)> {}
 
 /// Returns character mappings `c_a2b` (from `a` to `b`) and `c_b2a` (from `b` to `a`) based on shortest edit script (SES).
 ///
@@ -316,6 +322,13 @@ mod tests {
         assert_eq!(v, w)
     }
 
+    #[test]
+    fn test_get_char2token() {
+        let testcases = vec![(vec!["a", "bc"], vec![0, 1, 1])];
+        for (input, expected) in testcases.into_iter() {
+            assert_eq!(get_char2token(&input), expected);
+        }
+    }
     #[test]
     fn test_get_charmap() {
         let testcases = vec![

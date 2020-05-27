@@ -2,7 +2,7 @@
 requires = [ "poetry>=1.0.0",]
 build-backend = "poetry.masonry.api"
 
-[versionup]
+[tool.versionup]
 tag = true
 commit = true
 files = [ "src/lib.rs", "Cargo.toml",]

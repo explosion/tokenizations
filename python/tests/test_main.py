@@ -50,3 +50,10 @@ def test_equality_charmap(a):
     a2b, b2a = tokenizations.get_charmap(a, a)
     assert a2b == b2a
     assert a2b == list(range(len(a)))
+
+@given(st.lists(st.text()), st.text())
+def test_random_get_original_spans(tokens, text):
+    tokenizations.get_original_spans(tokens, text)
+    ret = tokenizations.get_original_spans(tokens, "".join(tokens))
+    assert all(x is not None for x in ret)
+    

@@ -249,8 +249,6 @@ pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment)
     (at2bt, bt2at)
 }
 
-// pub fn get_original_span<S: AsRef<str>>(tokens: &[S], original_text: &str) -> Vec<(usize, usize)> {}
-
 /// Returns character mappings `c_a2b` (from `a` to `b`) and `c_b2a` (from `b` to `a`) based on shortest edit script (SES).
 ///
 /// `a` and `b` can be noisy. For example, `bar` and `bår` can be compared.
@@ -274,6 +272,74 @@ pub fn get_charmap(a: &str, b: &str) -> (CharMap, CharMap) {
     let c_a2b: CharMap = a2b.into_iter().map(|x| x.into_iter().next()).collect();
     let c_b2a: CharMap = b2a.into_iter().map(|x| x.into_iter().next()).collect();
     (c_a2b, c_b2a)
+}
+
+fn get_span_indices<S: AsRef<str>>(tokens: &[S]) -> Vec<(usize, usize)> {
+    tokens
+        .iter()
+        .scan(0, |state, token| {
+            let l = *state;
+            let r = l + token.as_ref().chars().count();
+            *state = r;
+            Some((l, r))
+        })
+        .collect()
+}
+
+fn join<S: AsRef<str>>(tokens: &[S]) -> String {
+    let mut text = "".to_owned();
+    for token in tokens.iter() {
+        text.push_str(token.as_ref());
+    }
+    text
+}
+
+pub fn get_original_spans<S: AsRef<str>>(
+    tokens: &[S],
+    original_text: &str,
+) -> Vec<Option<(usize, usize)>> {
+    let spans = get_span_indices(tokens);
+    let text = join(tokens);
+    let (a2b, b2a) = get_charmap(&text, original_text);
+
+    let mut ret = vec![];
+    for (l, r) in spans {
+        // get the leftmost corresponding char
+        let mut origl = None;
+        for i in l..r {
+            if a2b[i] != None {
+                origl = a2b[i];
+                break;
+            }
+        }
+        // get the rightmost corresponding char
+        let mut origr = None;
+        for i in (l..r).rev() {
+            if let Some(j) = a2b[i] {
+                origr = Some(j + 1);
+                break;
+            }
+        }
+        // edge case: a token with empty string
+        if l == r {
+            if l >= a2b.len() {
+                origl = Some(b2a.len());
+            } else {
+                origl = a2b[l];
+            }
+            origr = origl;
+        }
+        ret.push(match (origl, origr) {
+            (Some(l), Some(r)) => Some((l, r)),
+            (None, None) => None,
+            _ => unreachable!(
+                "Internal error occured in get_original_span\ntokens: {:?}\noriginal_text: {:?}",
+                tokens.iter().map(|x| x.as_ref()).collect::<Vec<_>>(),
+                original_text
+            ),
+        })
+    }
+    ret
 }
 
 #[cfg(test)]
@@ -320,6 +386,55 @@ mod tests {
         let v = path_to_charmap(get_shortest_edit_path_grid(&a, &b));
         let w = path_to_charmap(get_shortest_edit_path_myers(&a, &b));
         assert_eq!(v, w)
+    }
+
+    #[quickcheck]
+    fn randomcheck_get_original_spans_for_clean_text(tokens: Vec<String>) -> bool {
+        let spans = get_span_indices(&tokens);
+        let output = get_original_spans(&tokens, &join(&tokens))
+            .iter()
+            .map(|&x| x.unwrap())
+            .collect::<Vec<_>>();
+        spans == output
+    }
+
+    #[test]
+    fn test_get_original_spans() {
+        let testcases = vec![
+            (
+                (vec!["fあo①が", "bar"], "fあo1かbar"),
+                (vec![Some((0, 5)), Some((5, 8))]),
+            ),
+            ((vec!["New York"], "NewYork"), (vec![Some((0, 7))])),
+            (
+                (vec!["A'B", "", ""], "A B"),
+                (vec![Some((0, 3)), Some((3, 3)), Some((3, 3))]),
+            ),
+            ((vec!["A'b", ""], "a b"), (vec![Some((0, 3)), Some((3, 3))])),
+            (
+                (vec!["", "", ""], ""),
+                (vec![Some((0, 0)), Some((0, 0)), Some((0, 0))]),
+            ),
+            (
+                (vec!["à", " ", "", "la", "gorge", ""], "a     lagorge"),
+                (vec![
+                    Some((0, 1)),
+                    Some((1, 2)),
+                    Some((6, 6)),
+                    Some((6, 8)),
+                    Some((8, 13)),
+                    Some((13, 13)),
+                ]),
+            ),
+        ];
+        for (input, expected) in testcases.into_iter() {
+            assert_eq!(
+                get_original_spans(&input.0, input.1),
+                expected,
+                "{:?}",
+                input
+            );
+        }
     }
 
     #[test]

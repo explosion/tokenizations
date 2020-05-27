@@ -214,7 +214,7 @@ fn get_alignment(
     at2bt
 }
 
-/// Returns tokenizations alignments `a2b` (from `a` to `b`) and `b2a` (from `b` to `a`) based on shortest edit script (SES).
+/// Returns the tokenizations alignments `a2b` (from `a` to `b`) and `b2a` (from `b` to `a`) based on the shortest edit script (SES).
 ///
 /// # Examples
 ///
@@ -249,9 +249,9 @@ pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment)
     (at2bt, bt2at)
 }
 
-/// Returns character mappings `c_a2b` (from `a` to `b`) and `c_b2a` (from `b` to `a`) based on shortest edit script (SES).
+/// Returns the character mappings `c_a2b` (from `a` to `b`) and `c_b2a` (from `b` to `a`) based on the shortest edit script (SES).
 ///
-/// `a` and `b` can be noisy. For example, `bar` and `bår` can be compared.
+/// `a` and `b` can be noisy. For example, `bar` and `bår` can be properly compared.
 ///
 /// # Examples
 ///
@@ -294,6 +294,18 @@ fn join<S: AsRef<str>>(tokens: &[S]) -> String {
     text
 }
 
+/// Returns the span indices in original_text from the tokens based on the shortest edit script (SES).
+/// This is useful, for example, when a processed result is mapped to the original text that is not normalized yet.
+///
+/// # Examples
+///
+/// ```
+/// use tokenizations::get_original_spans;
+/// let tokens = vec!["a", "la", "gorge"];
+/// let original_text = "à  LA    gorge";
+/// let spans = get_original_spans(&tokens, original_text);
+/// assert_eq!(spans, vec![Some((0,1)), Some((3,5)), Some((9,14))]);
+/// ```
 pub fn get_original_spans<S: AsRef<str>>(
     tokens: &[S],
     original_text: &str,

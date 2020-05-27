@@ -318,16 +318,16 @@ pub fn get_original_spans<S: AsRef<str>>(
     for (l, r) in spans {
         // get the leftmost corresponding char
         let mut origl = None;
-        for i in l..r {
-            if a2b[i] != None {
-                origl = a2b[i];
+        for &x in a2b[l..r].iter() {
+            if x != None {
+                origl = x;
                 break;
             }
         }
         // get the rightmost corresponding char
         let mut origr = None;
-        for i in (l..r).rev() {
-            if let Some(j) = a2b[i] {
+        for x in a2b[l..r].iter().rev() {
+            if let Some(j) = x {
                 origr = Some(j + 1);
                 break;
             }

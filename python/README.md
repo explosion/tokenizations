@@ -21,4 +21,4 @@ Now wheel is built in `python/target/wheels` directory. You can install it with 
 
 # Usage 
 
-See the [README.md](../README.md)
+See the [README.md](https://github.com/tamuhey/tokenizations#usage-python)

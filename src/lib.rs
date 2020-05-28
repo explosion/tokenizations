@@ -428,6 +428,10 @@ mod tests {
                 (vec![Some((0, 0)), Some((0, 0)), Some((0, 0))]),
             ),
             (
+                (vec!["hello", "``world``"], "Hello \"world\""),
+                vec![Some((0, 5)), Some((7, 12))],
+            ),
+            (
                 (vec!["à", " ", "", "la", "gorge", ""], "a     lagorge"),
                 (vec![
                     Some((0, 1)),
@@ -486,9 +490,46 @@ mod tests {
                 vec![Some(0), Some(1), Some(2), Some(3)],
             ),
             ("¨", "", vec![None], vec![]),
+            (
+                "hello``world``",
+                "Hello \"world\"",
+                vec![
+                    Some(0),
+                    Some(1),
+                    Some(2),
+                    Some(3),
+                    Some(4),
+                    None,
+                    None,
+                    Some(7),
+                    Some(8),
+                    Some(9),
+                    Some(10),
+                    Some(11),
+                    None,
+                    None,
+                ],
+                vec![
+                    Some(0),
+                    Some(1),
+                    Some(2),
+                    Some(3),
+                    Some(4),
+                    None,
+                    None,
+                    Some(7),
+                    Some(8),
+                    Some(9),
+                    Some(10),
+                    Some(11),
+                    None,
+                ],
+            ),
         ];
         for (a, b, e_a2b, e_b2a) in testcases {
             let (a2b, b2a) = get_charmap(a, b);
+            assert_eq!(a2b.len(), a.chars().count(), "a2b {:?}", a2b);
+            assert_eq!(b2a.len(), b.chars().count(), "b2a {:?}", b2a);
             assert_eq!(a2b, e_a2b);
             assert_eq!(b2a, e_b2a);
         }

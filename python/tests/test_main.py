@@ -51,9 +51,21 @@ def test_equality_charmap(a):
     assert a2b == b2a
     assert a2b == list(range(len(a)))
 
+
 @given(st.lists(st.text()), st.text())
 def test_random_get_original_spans(tokens, text):
     tokenizations.get_original_spans(tokens, text)
     ret = tokenizations.get_original_spans(tokens, "".join(tokens))
     assert all(x is not None for x in ret)
-    
+
+
+@pytest.mark.parametrize(
+    "tokens,text,expected",
+    [
+        (["Hello", "world"], "Hello world", [(0, 5), (6, 11)]),
+        (["hello", "``world``"], 'Hello "world"', [(0, 5), (7, 12)]),
+    ],
+)
+def test_random_get_original_spans(tokens, text, expected):
+    ret = tokenizations.get_original_spans(tokens, text)
+    assert ret == expected, (tokens, text)

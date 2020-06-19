@@ -1,107 +1,21 @@
 #![deny(warnings)]
 //! Tokenizations alignment functions.
 #[cfg(test)]
-mod test;
-use std::collections::HashMap;
+mod tests;
 #[cfg(test)]
 extern crate quickcheck;
 #[cfg(test)]
 #[macro_use(quickcheck)]
 extern crate quickcheck_macros;
+extern crate seqdiff;
 extern crate unicode_normalization;
+use seqdiff::Diff;
 use unicode_normalization::UnicodeNormalization;
 
 pub type Alignment = Vec<Vec<usize>>;
 
 fn normalize(text: &str) -> String {
     text.to_lowercase().nfkd().collect()
-}
-
-type Point = (usize, usize);
-
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
-enum Node {
-    P(Point),
-    Root,
-}
-
-struct EditPathFromHashMap {
-    nodes_map: HashMap<Node, Node>,
-    cur: Node,
-}
-
-impl<'a> Iterator for EditPathFromHashMap {
-    type Item = (usize, usize);
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.cur {
-            Node::Root => None,
-            Node::P(cur) => {
-                self.cur = *self.nodes_map.get(&Node::P(cur)).unwrap();
-                Some(cur)
-            }
-        }
-    }
-}
-
-/// Returns an iterator over the shotest path of the edit graph based on Myers' diff algorithm.
-///
-/// See [An O(ND) Difference Algorithm and Its Variations](http://www.xmailserver.org/diff2.pdf)
-#[allow(clippy::many_single_char_names)]
-fn get_shortest_edit_path_myers(a: &str, b: &str) -> EditPathFromHashMap {
-    let a: Vec<char> = a.chars().collect();
-    let b: Vec<char> = b.chars().collect();
-    let n = a.len();
-    let m = b.len();
-    let bound = n + m;
-    let get_y = |x, k| x + bound - k;
-    let mut v = vec![0; 2 * bound + 1];
-    let mut nodes_map = HashMap::new();
-    'outer: for d in 0..=bound {
-        for k in ((bound - d)..=bound + d).step_by(2) {
-            let (mut x, parent) = if d == 0 {
-                (0, Node::Root)
-            } else if k == (bound - d) || k != (bound + d) && v[k - 1] < v[k + 1] {
-                let px = v[k + 1];
-                (px, Node::P((px, get_y(px, k + 1))))
-            } else {
-                let px = v[k - 1];
-                (px + 1, Node::P((px, get_y(px, k - 1))))
-            };
-            let mut y = get_y(x, k);
-            nodes_map.insert(Node::P((x, y)), parent);
-            while x < n && y < m && a[x] == b[y] {
-                nodes_map.insert(Node::P((x + 1, y + 1)), Node::P((x, y)));
-                x += 1;
-                y += 1;
-            }
-            v[k] = x;
-            if x >= n && y >= m {
-                break 'outer;
-            }
-        }
-    }
-
-    EditPathFromHashMap {
-        nodes_map,
-        cur: Node::P((n, m)),
-    }
-}
-
-pub type CharMap = Vec<Option<usize>>;
-
-fn path_to_charmap(mut path: impl Iterator<Item = (usize, usize)>) -> (CharMap, CharMap) {
-    let (mut i, mut j) = path.next().unwrap();
-    let mut a2b = vec![None; i];
-    let mut b2a = vec![None; j];
-    for (pi, pj) in path {
-        if (i - pi) + (j - pj) == 2 {
-            a2b[pi] = Some(pj);
-            b2a[pj] = Some(pi);
-        }
-        i = pi;
-        j = pj;
-    }
-    (a2b, b2a)
 }
 
 fn get_char2token<T: AsRef<str>>(tokens: &[T]) -> Vec<usize> {
@@ -170,7 +84,7 @@ pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment)
     let b: Vec<String> = b.iter().map(|x| normalize(x.as_ref())).collect();
     let ac2t = get_char2token(&a);
     let bc2t = get_char2token(&b);
-    let (a2b, b2a) = path_to_charmap(get_shortest_edit_path_myers(&a.join(""), &b.join("")));
+    let (a2b, b2a) = seqdiff::diff(&a.join("").chars().collect(), &b.join("").chars().collect());
     let at2bt = get_alignment(a.len(), &a2b, &ac2t, &bc2t);
     let bt2at = get_alignment(b.len(), &b2a, &bc2t, &ac2t);
     (at2bt, bt2at)
@@ -192,12 +106,12 @@ pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment)
 /// assert_eq!(c_a2b, vec![Some(0), Some(1), Some(2)]);
 /// assert_eq!(c_b2a, vec![Some(0), Some(1), Some(2)]);
 /// ```
-pub fn get_charmap(a: &str, b: &str) -> (CharMap, CharMap) {
+pub fn get_charmap(a: &str, b: &str) -> (Diff, Diff) {
     let at: Vec<String> = a.chars().map(|x| x.to_string()).collect();
     let bt: Vec<String> = b.chars().map(|x| x.to_string()).collect();
     let (a2b, b2a) = get_alignments(&at, &bt);
-    let c_a2b: CharMap = a2b.into_iter().map(|x| x.into_iter().next()).collect();
-    let c_b2a: CharMap = b2a.into_iter().map(|x| x.into_iter().next()).collect();
+    let c_a2b: Diff = a2b.into_iter().map(|x| x.into_iter().next()).collect();
+    let c_b2a: Diff = b2a.into_iter().map(|x| x.into_iter().next()).collect();
     (c_a2b, c_b2a)
 }
 

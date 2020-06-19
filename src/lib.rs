@@ -13,6 +13,7 @@ use seqdiff::Diff;
 use unicode_normalization::UnicodeNormalization;
 
 pub type Alignment = Vec<Vec<usize>>;
+pub type CharMap = Diff;
 
 fn normalize(text: &str) -> String {
     text.to_lowercase().nfkd().collect()

@@ -15,5 +15,5 @@ name = "tokenizations"
 crate-type = ["cdylib"]
 
 [dependencies.pyo3]
-version = "0.8.4"
+version = "0.10"
 features = ["extension-module"]

@@ -73,3 +73,4 @@ Returns character mappings `a2b` (from `a` to `b`) and `b2a` (from `b` to `a`).
 
 - [Algorithm overview](./note/algorithm.md)  
 - [Blog post](./note/blog_post.md)  
+- [seqdiff](https://github.com/tamuhey/seqdiff) is used for the diff process.

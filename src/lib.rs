@@ -85,7 +85,10 @@ pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment)
     let b: Vec<String> = b.iter().map(|x| normalize(x.as_ref())).collect();
     let ac2t = get_char2token(&a);
     let bc2t = get_char2token(&b);
-    let (a2b, b2a) = seqdiff::diff(&a.join("").chars().collect(), &b.join("").chars().collect());
+    let (a2b, b2a) = seqdiff::diff(
+        &a.join("").chars().collect::<Vec<_>>(),
+        &b.join("").chars().collect::<Vec<_>>(),
+    );
     let at2bt = get_alignment(a.len(), &a2b, &ac2t, &bc2t);
     let bt2at = get_alignment(b.len(), &b2a, &bc2t, &ac2t);
     (at2bt, bt2at)

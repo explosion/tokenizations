@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { GitHub } from "@material-ui/icons";
+import GitHub from "@material-ui/icons/GitHub";
 import { makeStyles, createStyles } from "@material-ui/styles";
-import {
-  Container,
-  Paper,
-  Grid,
-  TextField,
-  Typography,
-  Box,
-  Link,
-} from "@material-ui/core";
+import Container from "@material-ui/core/Container";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import Link from "@material-ui/core/Link";
 import LineTo from "react-lineto";
 
 const repoURL = "https://github.com/tamuhey/tokenizations";

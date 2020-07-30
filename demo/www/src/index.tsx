@@ -38,22 +38,23 @@ const useStyles = makeStyles((theme) =>
 interface InputProps {
   text: string;
   setText: (text: string) => void;
-  isError: boolean;
+  error: boolean;
 }
-const Input = ({ text, setText, isError }: InputProps) => {
+const Input = ({ text, setText, error }: InputProps) => {
   const classes = useStyles();
   return (
     <Grid item xs={12}>
       <TextField
         value={text}
         onChange={(e) => setText(e.target.value)}
-        error={isError}
+        error={error}
         fullWidth
         InputProps={{
           classes: {
             input: classes.textField,
           },
         }}
+        helperText={error ? "Invalid JSON array" : ""}
       />
     </Grid>
   );
@@ -94,10 +95,10 @@ export const Index = () => {
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Input text={inputA} setText={setInputA} isError={errorA} />
+            <Input text={inputA} setText={setInputA} error={errorA} />
           </Grid>
           <Grid item xs={12}>
-            <Input text={inputB} setText={setInputB} isError={errorB} />
+            <Input text={inputB} setText={setInputB} error={errorB} />
           </Grid>
           <div className="tokens">
             <Grid item xs={12}>

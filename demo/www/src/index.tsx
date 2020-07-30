@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { GitHub } from "@material-ui/icons";
+import { makeStyles, createStyles } from "@material-ui/styles";
 import {
   Container,
   Paper,
   Grid,
   TextField,
-  Card,
-  CardContent,
   Typography,
   Box,
   Link,
 } from "@material-ui/core";
 import LineTo from "react-lineto";
 
+const repoURL = "https://github.com/tamuhey/tokenizations";
+const repoWWWURL = "https://github.com/tamuhey/tokenizations/tree/master/demo";
 const boxStyle = {
   padding: "10px",
   border: "1px solid black",
@@ -28,6 +29,38 @@ const tryParse = (input: string): [string[], boolean] => {
   }
 };
 
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    textField: {
+      fontSize: "1.3rem",
+    },
+  })
+);
+
+interface InputProps {
+  text: string;
+  setText: (text: string) => void;
+  isError: boolean;
+}
+const Input = ({ text, setText, isError }: InputProps) => {
+  const classes = useStyles();
+  return (
+    <Grid item xs={12}>
+      <TextField
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        error={isError}
+        fullWidth
+        InputProps={{
+          classes: {
+            input: classes.textField,
+          },
+        }}
+      />
+    </Grid>
+  );
+};
+
 export const Index = () => {
   const [inputA, setInputA] = useState(`["John", "Johanson", "'s", "house"]`);
   const [inputB, setInputB] = useState(
@@ -37,6 +70,7 @@ export const Index = () => {
   const [tokensB, errorB] = tryParse(inputB);
   const [tokenization, setTokenization] = useState(null);
   const loadWasm = async () => setTokenization(await import("tokenization"));
+  const classes = useStyles();
 
   useEffect(() => {
     loadWasm();
@@ -46,33 +80,26 @@ export const Index = () => {
     : [[], []];
   console.log(a2b);
   return (
-    <Container maxWidth="md" style={{ marginTop: "20px" }}>
+    <Container maxWidth="md" style={{ marginTop: 20 }}>
       <Paper>
         <Box display="flex" justifyContent="center" m={3} alignItems="center">
           <Typography variant="h3">Tokenizations Demo</Typography>
-          <Link
-            href="https://github.com/tamuhey/tokenizations"
-            style={{ marginLeft: "20px" }}
-          >
+          <Link href={repoURL} style={{ marginLeft: "20px" }}>
             <GitHub />
           </Link>
         </Box>
         <Grid container spacing={3} style={{ padding: "30px" }}>
           <Grid item xs={12}>
-            <TextField
-              value={inputA}
-              onChange={(e) => setInputA(e.target.value)}
-              error={errorA}
-              fullWidth
-            />
+            <Typography>
+              <Link href={repoURL}>Tokenization</Link> is a token alignment
+              library for rust and Python. Feel free to change the below texts.
+            </Typography>
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              value={inputB}
-              onChange={(e) => setInputB(e.target.value)}
-              error={errorB}
-              fullWidth
-            />
+            <Input text={inputA} setText={setInputA} isError={errorA} />
+          </Grid>
+          <Grid item xs={12}>
+            <Input text={inputB} setText={setInputB} isError={errorB} />
           </Grid>
           <div className="tokens">
             <Grid item xs={12}>
@@ -110,6 +137,12 @@ export const Index = () => {
               />
             ));
           })}
+          <Grid item xs={12}>
+            <Typography>
+              This site is built with React and Wasm. The source is{" "}
+              <Link href={repoWWWURL}>here</Link>.
+            </Typography>
+          </Grid>
         </Grid>
       </Paper>
     </Container>

@@ -4,7 +4,7 @@ use tokenizations::{get_alignments, get_charmap, get_original_spans, Alignment, 
 
 #[pymodule]
 fn tokenizations(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add("__version__", "0.5.0")?;
+    m.add("__version__", "0.6.0")?;
 
     #[pyfn(m, "get_alignments")]
     pub fn get_alignments_py(

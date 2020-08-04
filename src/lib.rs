@@ -5,7 +5,6 @@ mod tests;
 #[cfg(test)]
 extern crate quickcheck;
 #[cfg(test)]
-#[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 extern crate seqdiff;
 extern crate unicode_normalization;
@@ -13,7 +12,7 @@ use seqdiff::Diff;
 use unicode_normalization::UnicodeNormalization;
 
 pub type Alignment = Vec<Vec<usize>>;
-pub type CharMap = Diff;
+pub type CharMap = Vec<Vec<usize>>;
 
 fn normalize(text: &str) -> String {
     text.to_lowercase().nfkd().collect()
@@ -107,10 +106,18 @@ pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment)
 /// let a = "bar";
 /// let b = "bår";
 /// let (c_a2b, c_b2a) = get_charmap(a, b);
-/// assert_eq!(c_a2b, vec![Some(0), Some(1), Some(2)]);
-/// assert_eq!(c_b2a, vec![Some(0), Some(1), Some(2)]);
+/// assert_eq!(c_a2b, vec![vec![0], vec![1], vec![2]]);
+/// assert_eq!(c_b2a, vec![vec![0], vec![1], vec![2]]);
 /// ```
-pub fn get_charmap(a: &str, b: &str) -> (Diff, Diff) {
+pub fn get_charmap(a: &str, b: &str) -> (CharMap, CharMap) {
+    let at: Vec<String> = a.chars().map(|x| x.to_string()).collect();
+    let bt: Vec<String> = b.chars().map(|x| x.to_string()).collect();
+    get_alignments(&at, &bt)
+}
+
+// Deprecated functions:
+
+fn _get_charmap(a: &str, b: &str) -> (Diff, Diff) {
     let at: Vec<String> = a.chars().map(|x| x.to_string()).collect();
     let bt: Vec<String> = b.chars().map(|x| x.to_string()).collect();
     let (a2b, b2a) = get_alignments(&at, &bt);
@@ -139,25 +146,14 @@ fn join<S: AsRef<str>>(tokens: &[S]) -> String {
     text
 }
 
-/// Returns the span indices in original_text from the tokens based on the shortest edit script (SES).
-/// This is useful, for example, when a processed result is mapped to the original text that is not normalized yet.
-///
-/// # Examples
-///
-/// ```
-/// use tokenizations::get_original_spans;
-/// let tokens = vec!["a", "la", "gorge"];
-/// let original_text = "à  LA    gorge";
-/// let spans = get_original_spans(&tokens, original_text);
-/// assert_eq!(spans, vec![Some((0,1)), Some((3,5)), Some((9,14))]);
-/// ```
+#[deprecated(since = "0.5.0", note = "please use `textspan::align_spans` instead")]
 pub fn get_original_spans<S: AsRef<str>>(
     tokens: &[S],
     original_text: &str,
 ) -> Vec<Option<(usize, usize)>> {
     let spans = get_span_indices(tokens);
     let text = join(tokens);
-    let (a2b, b2a) = get_charmap(&text, original_text);
+    let (a2b, b2a) = _get_charmap(&text, original_text);
 
     let mut ret = vec![];
     for (l, r) in spans {

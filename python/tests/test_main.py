@@ -34,10 +34,10 @@ def test_get_alignments(input_, expected):
 
 
 @pytest.mark.parametrize(
-    "input_,expected", [(("foo", "fo0"), ([0, 1, None], [0, 1, None]))]
+    "input_,expected", [(("foo", "fo0"), ([[0], [1], []], [[0], [1], []]))]
 )
 def test_get_charmap(input_, expected):
-    tokenizations.get_charmap(*input_)
+    assert tokenizations.get_charmap(*input_) == expected
 
 
 @given(st.text(), st.text())
@@ -49,7 +49,7 @@ def test_random_charmap(a, b):
 def test_equality_charmap(a):
     a2b, b2a = tokenizations.get_charmap(a, a)
     assert a2b == b2a
-    assert a2b == list(range(len(a)))
+    assert a2b == [[x] for x in range(len(a))]
 
 
 @given(st.lists(st.text()), st.text())

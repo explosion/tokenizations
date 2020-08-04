@@ -1,3 +1,4 @@
+#![allow(clippy::deprecated)]
 use pyo3::prelude::*;
 use tokenizations::{get_alignments, get_charmap, get_original_spans, Alignment, CharMap};
 

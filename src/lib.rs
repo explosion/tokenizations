@@ -12,7 +12,7 @@ use seqdiff::Diff;
 use unicode_normalization::UnicodeNormalization;
 
 pub type Alignment = Vec<Vec<usize>>;
-pub type CharMap = Diff;
+pub type CharMap = Vec<Vec<usize>>;
 
 fn normalize(text: &str) -> String {
     text.to_lowercase().nfkd().collect()
@@ -109,7 +109,7 @@ pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment)
 /// assert_eq!(c_a2b, vec![vec![0], vec![1], vec![2]]);
 /// assert_eq!(c_b2a, vec![vec![0], vec![1], vec![2]]);
 /// ```
-pub fn get_charmap(a: &str, b: &str) -> (Vec<Vec<usize>>, Vec<Vec<usize>>) {
+pub fn get_charmap(a: &str, b: &str) -> (CharMap, CharMap) {
     let at: Vec<String> = a.chars().map(|x| x.to_string()).collect();
     let bt: Vec<String> = b.chars().map(|x| x.to_string()).collect();
     get_alignments(&at, &bt)
@@ -146,7 +146,7 @@ fn join<S: AsRef<str>>(tokens: &[S]) -> String {
     text
 }
 
-#[deprecated(since = "0.4.0", note = "please use `textspan::align_spans` instead")]
+#[deprecated(since = "0.5.0", note = "please use `textspan::align_spans` instead")]
 pub fn get_original_spans<S: AsRef<str>>(
     tokens: &[S],
     original_text: &str,

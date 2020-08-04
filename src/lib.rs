@@ -5,7 +5,6 @@ mod tests;
 #[cfg(test)]
 extern crate quickcheck;
 #[cfg(test)]
-#[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 extern crate seqdiff;
 extern crate unicode_normalization;
@@ -107,17 +106,16 @@ pub fn get_alignments<S: AsRef<str>>(a: &[S], b: &[S]) -> (Alignment, Alignment)
 /// let a = "bar";
 /// let b = "bår";
 /// let (c_a2b, c_b2a) = get_charmap(a, b);
-/// assert_eq!(c_a2b, vec![Some(0), Some(1), Some(2)]);
-/// assert_eq!(c_b2a, vec![Some(0), Some(1), Some(2)]);
+/// assert_eq!(c_a2b, vec![vec![0], vec![1], vec![2]]);
+/// assert_eq!(c_b2a, vec![vec![0], vec![1], vec![2]]);
 /// ```
-pub fn get_charmap(a: &str, b: &str) -> (Diff, Diff) {
+pub fn get_charmap(a: &str, b: &str) -> (Vec<Vec<usize>>, Vec<Vec<usize>>) {
     let at: Vec<String> = a.chars().map(|x| x.to_string()).collect();
     let bt: Vec<String> = b.chars().map(|x| x.to_string()).collect();
-    let (a2b, b2a) = get_alignments(&at, &bt);
-    let c_a2b: Diff = a2b.into_iter().map(|x| x.into_iter().next()).collect();
-    let c_b2a: Diff = b2a.into_iter().map(|x| x.into_iter().next()).collect();
-    (c_a2b, c_b2a)
+    get_alignments(&at, &bt)
 }
+
+// Deprecated functions:
 
 fn _get_charmap(a: &str, b: &str) -> (Diff, Diff) {
     let at: Vec<String> = a.chars().map(|x| x.to_string()).collect();

@@ -98,6 +98,7 @@ fn test_get_char2token() {
 #[test]
 fn test_get_charmap() {
     let testcases = vec![
+        ("å", "å", vec![Some(0)], vec![Some(0), Some(0)]),
         (
             "あがさ",
             "あかさ",

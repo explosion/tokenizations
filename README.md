@@ -6,17 +6,29 @@
 ![sample](./img/demo.png)
 
 Demo: [demo](https://tamuhey.github.io/tokenizations/)  
-Rust document: [docs.rs](https://docs.rs/tokenizations/0.2.2/tokenizations/)  
-Python document: [python/README.md](./python/README.md)  
+Rust document: [docs.rs](https://docs.rs/tokenizations)  
 Blog post: [How to calculate the alignment between BERT and spaCy tokens effectively and robustly](https://gist.github.com/tamuhey/af6cbb44a703423556c32798e1e1b704)
 
 ## Usage (Python)
 
-Installation:
+- Installation
 
 ```bash
 $ pip install pytokenizations
 ```
+
+- Install from source
+
+This library uses [maturin](https://github.com/PyO3/maturin) to build the wheel.
+
+```console
+$ git clone https://github.com/tamuhey/tokenizations
+$ cd tokenizations/python
+$ pip install maturin
+$ maturin build
+```
+
+Now wheel is created in `python/target/wheels` directory, and you can install it with `pip install *whl`.
 
 ### `get_alignments`
 
@@ -69,8 +81,13 @@ Returns character mappings `a2b` (from `a` to `b`) and `b2a` (from `b` to `a`).
 ([0,1,2], [0,1,2])
 ```
 
-## Algorithm
+## Usage (Rust)
+
+See here: [docs.rs](https://docs.rs/tokenizations)  
+
+## Related
 
 - [Algorithm overview](./note/algorithm.md)  
 - [Blog post](./note/blog_post.md)  
 - [seqdiff](https://github.com/tamuhey/seqdiff) is used for the diff process.
+- [textspan](https://github.com/tamuhey/textspan)

@@ -101,8 +101,8 @@ const App = () => {
         <Grid container spacing={3} className={classes.gridContainer}>
           <Grid item xs={12}>
             <Typography>
-              <Link href={repoURL}>Tokenization</Link> is a token alignment
-              library for rust and Python. Feel free to change the below texts.
+              <Link href={repoURL}>Tokenizations</Link> is a token alignment
+              library for Rust and Python. Feel free to change the below texts.
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -149,7 +149,7 @@ const App = () => {
           })}
           <Grid item xs={12}>
             <Typography>
-              This site is built with React and Wasm. The source is{" "}
+              This page is built with React and Wasm. The source is{" "}
               <Link href={repoWWWURL}>here</Link>.
             </Typography>
           </Grid>

@@ -72,9 +72,9 @@ const Index = () => (
 );
 
 const App = () => {
-  const [inputA, setInputA] = useState(`["John", "Johanson", "'s", "house"]`);
+  const [inputA, setInputA] = useState(`["John", "Johånson", "'s", "house"]`);
   const [inputB, setInputB] = useState(
-    `["john", "johan", "##son", "'", "s", "house"]`
+    `["john", "johan", "##son", "s", "house"]`
   );
   const [tokensA, errorA] = tryParse(inputA);
   const [tokensB, errorB] = tryParse(inputB);

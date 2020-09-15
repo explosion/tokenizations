@@ -2,6 +2,7 @@
 name = "tokenizations"
 version = "0.4.0"
 license = "MIT"
+edition = "2018"
 description = "Tokenizations alignments library"
 homepage = "https://github.com/tamuhey/tokenizations"
 repository = "https://github.com/tamuhey/tokenizations"
@@ -17,4 +18,11 @@ seqdiff = "0.1"
 [dev-dependencies]
 quickcheck = "0.9"
 quickcheck_macros = "0.9"
+criterion = "0.3"
 
+[[bench]]
+name = "main"
+harness = false
+
+[lib]
+bench = false

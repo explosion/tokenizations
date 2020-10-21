@@ -28,7 +28,7 @@ $ pip install maturin
 $ maturin build
 ```
 
-Now wheel is created in `python/target/wheels` directory, and you can install it with `pip install *whl`.
+Now the wheel is created in `python/target/wheels` directory, and you can install it with `pip install *whl`.
 
 ### `get_alignments`
 
@@ -64,21 +64,6 @@ This is useful, for example, when a processed result is mapped to the original t
 >>> original_text = "å  BC"
 >>> get_original_spans(tokens, original_text)
 [(0,1), (3,5)]
-```
-
-### `get_charmap`
-
-```python
-def get_charmap(a: str, b: str) -> Tuple[List[Optional[int]], List[Optional[int]]]: ...
-```
-
-Returns character mappings `a2b` (from `a` to `b`) and `b2a` (from `b` to `a`).
-
-```python
->>> a = "åBC"
->>> b = "abc"
->>> get_charmap(a, b)
-([0,1,2], [0,1,2])
 ```
 
 ## Usage (Rust)

@@ -65,16 +65,16 @@ VERSION_DEPRECATE_ERR_GET_ORIGINAL_SPANS = "0.8"
     ),
     reason="deprecation check",
 )
-def warn_get_original_spans():
+def test_warn_get_original_spans():
     with pytest.warns(DeprecationWarning):
         get_original_spans([], "")
 
 
 @pytest.mark.skipif(
-    tokenizations.__version__ >= VERSION_DEPRECATE_ERR_GET_ORIGINAL_SPANS,
+    tokenizations.__version__ < VERSION_DEPRECATE_ERR_GET_ORIGINAL_SPANS,
     reason="deprecation error check",
 )
-def error_get_original_spans():
+def test_error_get_original_spans():
     with pytest.raises(Exception):
         get_original_spans([], "")
 

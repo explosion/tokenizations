@@ -20,6 +20,6 @@ include = "tokenizations"
 python = ">=3.5"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.1.1"
+pytest = "^6.1.2"
 hypothesis = "^5.3.1"
 twine = "^1.15.0"

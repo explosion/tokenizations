@@ -14,6 +14,7 @@ Blog post: [How to calculate the alignment between BERT and spaCy tokens effecti
 - Installation
 
 ```bash
+$ pip install -U pip # update pip
 $ pip install pytokenizations
 ```
 

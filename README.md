@@ -51,22 +51,6 @@ Returns alignment mappings for two different tokenizations:
 
 `a2b[i]` is a list representing the alignment from `tokens_a` to `tokens_b`.   
 
-### `get_original_spans`
-
-```python
-def get_original_spans(tokens: Sequence[str], original_text: str) -> List[Optional[Tuple[int, int]]]: ... 
-```
-
-Returns the span indices in original_text from the tokens.
-This is useful, for example, when a processed result is mapped to the original text that is not normalized yet.
-
-```python
->>> tokens = ["a", "bc"]
->>> original_text = "å  BC"
->>> get_original_spans(tokens, original_text)
-[(0,1), (3,5)]
-```
-
 ## Usage (Rust)
 
 See here: [docs.rs](https://docs.rs/tokenizations)  

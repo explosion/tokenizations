@@ -16,5 +16,5 @@ seqdiff = "0.2"
 
 [dev-dependencies]
 quickcheck = "0.9"
-quickcheck_macros = "0.9"
+quickcheck_macros = "1.0"
 

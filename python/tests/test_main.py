@@ -75,6 +75,5 @@ def test_warn_get_original_spans():
     reason="deprecation error check",
 )
 def test_error_get_original_spans():
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         get_original_spans([], "")
-

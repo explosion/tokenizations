@@ -62,4 +62,4 @@ See here: [docs.rs](https://docs.rs/tokenizations)
 - [seqdiff](https://github.com/tamuhey/seqdiff) is used for the diff process.
 - [textspan](https://github.com/tamuhey/textspan)
 - [explosion/spacy-alignments: 💫 A spaCy package for Yohei Tamura's Rust tokenizations library](https://github.com/explosion/spacy-alignments)
-  - Python bindings for this library, maintained by Explosion, author of spaCy
+  - Python bindings for this library, maintained by Explosion, author of spaCy. If you feel difficult to install pytokenizations, please try this.

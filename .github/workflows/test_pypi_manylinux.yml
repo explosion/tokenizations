@@ -14,7 +14,7 @@ jobs:
         container: 
           - centos
           - manylinux
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
     env:
       DOCKERFILE: dockerfiles/ci/${{ matrix.container }}/Dockerfile
       PYTHON: python${{ matrix.python-version }}

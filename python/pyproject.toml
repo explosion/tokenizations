@@ -22,4 +22,4 @@ python = ">=3.7"
 [tool.poetry.dev-dependencies]
 pytest = "^6.1.2"
 hypothesis = "^5.3.1"
-twine = "^1.15.0"
+twine = "^3.3.0"

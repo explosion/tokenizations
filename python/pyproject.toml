@@ -1,6 +1,6 @@
 [build-system]
-requires = [ "poetry>=1.0.0",]
-build-backend = "poetry.masonry.api"
+requires = [ "maturin",]
+build-backend = "maturin"
 
 [tool.versionup]
 tag = true

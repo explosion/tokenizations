@@ -1,7 +1,7 @@
 # Robust and Fast tokenizations alignment library for Rust and Python
 [![creates.io](https://img.shields.io/crates/v/tokenizations.svg)](https://crates.io/crates/tokenizations)
 [![pypi](https://img.shields.io/pypi/v/pytokenizations.svg)](https://pypi.org/project/pytokenizations/)
-[![Actions Status](https://github.com/tamuhey/tokenizations/workflows/Test/badge.svg)](https://github.com/tamuhey/tokenizations/actions)
+[![Actions Status](https://github.com/explosion/tokenizations/workflows/Test/badge.svg)](https://github.com/explosion/tokenizations/actions)
 
 ![sample](./img/demo.png)
 

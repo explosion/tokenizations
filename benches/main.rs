@@ -28,12 +28,10 @@ fn get_alignments(c: &mut Criterion) {
         "ppppppppppppppp",
     ]);
 
-    // short
     group.bench_function("handmade short", |b| {
         b.iter(|| tokenizations::get_alignments(&s, &t))
     });
 
-    // long
     let n = black_box(100);
     let s_long = s.repeat(n);
     let t_long = t.repeat(n);
@@ -42,23 +40,19 @@ fn get_alignments(c: &mut Criterion) {
         b.iter(|| tokenizations::get_alignments(&s_long, &t_long))
     });
 
-    // identical short
     group.bench_function("identical short", |b| {
         b.iter(|| tokenizations::get_alignments(&s, &s))
     });
 
-    // identical long
-    group.bench_function("identical short", |b| {
+    group.bench_function("identical long", |b| {
         b.iter(|| tokenizations::get_alignments(&s_long, &s_long))
     });
 
-    // completely different short
-    group.bench_function("completery different short", |b| {
+    group.bench_function("completely different short", |b| {
         b.iter(|| tokenizations::get_alignments(&s, &u))
     });
 
-    // completely different long
-    group.bench_function("completery different long", |b| {
+    group.bench_function("completely different long", |b| {
         b.iter(|| tokenizations::get_alignments(&s_long, &u_long))
     });
     group.finish()

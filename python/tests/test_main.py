@@ -1,3 +1,4 @@
+from tokenizations import get_original_spans
 import pytest
 import tokenizations
 from hypothesis import given
@@ -52,20 +53,27 @@ def test_equality_charmap(a):
     assert a2b == [[x] for x in range(len(a))]
 
 
-@given(st.lists(st.text()), st.text())
-def test_random_get_original_spans(tokens, text):
-    tokenizations.get_original_spans(tokens, text)
-    ret = tokenizations.get_original_spans(tokens, "".join(tokens))
-    assert all(x is not None for x in ret)
+VERSION_DEPRECATE_WARN_GET_ORIGINAL_SPANS = "0.7"
+VERSION_DEPRECATE_ERR_GET_ORIGINAL_SPANS = "0.8"
 
 
-@pytest.mark.parametrize(
-    "tokens,text,expected",
-    [
-        (["Hello", "world"], "Hello world", [(0, 5), (6, 11)]),
-        (["hello", "``world``"], 'Hello "world"', [(0, 5), (7, 12)]),
-    ],
+@pytest.mark.skipif(
+    not (
+        VERSION_DEPRECATE_WARN_GET_ORIGINAL_SPANS
+        <= tokenizations.__version__
+        < VERSION_DEPRECATE_ERR_GET_ORIGINAL_SPANS
+    ),
+    reason="deprecation check",
 )
-def test_random_get_original_spans(tokens, text, expected):
-    ret = tokenizations.get_original_spans(tokens, text)
-    assert ret == expected, (tokens, text)
+def test_warn_get_original_spans():
+    with pytest.warns(DeprecationWarning):
+        get_original_spans([], "")
+
+
+@pytest.mark.skipif(
+    tokenizations.__version__ < VERSION_DEPRECATE_ERR_GET_ORIGINAL_SPANS,
+    reason="deprecation error check",
+)
+def test_error_get_original_spans():
+    with pytest.raises(ValueError):
+        get_original_spans([], "")

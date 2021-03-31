@@ -14,6 +14,7 @@ Blog post: [How to calculate the alignment between BERT and spaCy tokens effecti
 - Installation
 
 ```bash
+$ pip install -U pip # update pip
 $ pip install pytokenizations
 ```
 
@@ -28,7 +29,7 @@ $ pip install maturin
 $ maturin build
 ```
 
-Now wheel is created in `python/target/wheels` directory, and you can install it with `pip install *whl`.
+Now the wheel is created in `python/target/wheels` directory, and you can install it with `pip install *whl`.
 
 ### `get_alignments`
 
@@ -50,37 +51,6 @@ Returns alignment mappings for two different tokenizations:
 
 `a2b[i]` is a list representing the alignment from `tokens_a` to `tokens_b`.   
 
-### `get_original_spans`
-
-```python
-def get_original_spans(tokens: Sequence[str], original_text: str) -> List[Optional[Tuple[int, int]]]: ... 
-```
-
-Returns the span indices in original_text from the tokens.
-This is useful, for example, when a processed result is mapped to the original text that is not normalized yet.
-
-```python
->>> tokens = ["a", "bc"]
->>> original_text = "å  BC"
->>> get_original_spans(tokens, original_text)
-[(0,1), (3,5)]
-```
-
-### `get_charmap`
-
-```python
-def get_charmap(a: str, b: str) -> Tuple[List[Optional[int]], List[Optional[int]]]: ...
-```
-
-Returns character mappings `a2b` (from `a` to `b`) and `b2a` (from `b` to `a`).
-
-```python
->>> a = "åBC"
->>> b = "abc"
->>> get_charmap(a, b)
-([0,1,2], [0,1,2])
-```
-
 ## Usage (Rust)
 
 See here: [docs.rs](https://docs.rs/tokenizations)  
@@ -91,3 +61,5 @@ See here: [docs.rs](https://docs.rs/tokenizations)
 - [Blog post](./note/blog_post.md)  
 - [seqdiff](https://github.com/tamuhey/seqdiff) is used for the diff process.
 - [textspan](https://github.com/tamuhey/textspan)
+- [explosion/spacy-alignments: 💫 A spaCy package for Yohei Tamura's Rust tokenizations library](https://github.com/explosion/spacy-alignments)
+  - Python bindings for this library, maintained by Explosion, author of spaCy. If you feel difficult to install pytokenizations, please try this.

@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9]
         os: [macos-latest, windows-latest, ubuntu-latest]
     steps:
     - uses: actions/checkout@v1
@@ -80,7 +80,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9]
         # ubuntu wheel is built in `manylinux_build.yml`
         os: [macos-latest, windows-latest]
 

@@ -13,7 +13,7 @@ documentation = "https://docs.rs/tokenizations"
 
 [dependencies]
 unicode-normalization = "0.1.8"
-seqdiff = "0.2"
+seqdiff = "0.3"
 
 [dev-dependencies]
 quickcheck = "0.9"
@@ -26,3 +26,6 @@ harness = false
 
 [lib]
 bench = false
+
+[profile.bench]
+debug = 2

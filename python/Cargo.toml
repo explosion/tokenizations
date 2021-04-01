@@ -1,14 +1,13 @@
 [package]
 name = "pytokenizations"
-version = "0.8.2"
+version = "0.8.3"
 authors = ["Yohei Tamura <tamuhey@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokenizations = "^0.4.0"
-
+tokenizations = "0.4.2"
 
 [lib]
 name = "tokenizations"

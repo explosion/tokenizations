@@ -1,6 +1,6 @@
 [package]
 name = "tokenizations"
-version = "0.4.1"
+version = "0.4.2"
 license = "MIT"
 edition = "2018"
 description = "Tokenizations alignments library"
@@ -12,7 +12,7 @@ readme = "README.md"
 documentation = "https://docs.rs/tokenizations"
 
 [dependencies]
-unicode-normalization = "0.1.8"
+unicode-normalization = "0.1.17"
 seqdiff = "0.3"
 
 [dev-dependencies]

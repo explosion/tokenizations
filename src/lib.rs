@@ -167,11 +167,9 @@ pub fn get_original_spans<S: AsRef<str>>(
         }
         // get the rightmost corresponding char
         let mut origr = None;
-        for x in a2b[l..r].iter().rev() {
-            if let Some(j) = x {
-                origr = Some(j + 1);
-                break;
-            }
+        for j in a2b[l..r].iter().rev().flatten() {
+            origr = Some(j + 1);
+            break;
         }
         // edge case: a token with empty string
         if l == r {

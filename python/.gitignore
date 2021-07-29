@@ -126,3 +126,5 @@ dmypy.json
 .pyre/
 
 .vscode/
+.benchmarks
+poetry.lock

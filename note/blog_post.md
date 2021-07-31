@@ -90,7 +90,7 @@ In short, it turns out that Myers' algorithm helps us to get the correspondens o
 
 ## Overview of the algorithm
 
-The considerations so far have shown that suitale normalizations and character-based diff gives us a generic method for computing
+The considerations so far have shown that suitable normalizations and character-based diff gives us a generic method for computing
 the alignment of two token sequences.
 Let's summarize the specific steps briefly.
 

@@ -18,7 +18,7 @@ $ pip install -U pip # update pip
 $ pip install pytokenizations
 ```
 
-- Install from source
+- Or, install from source
 
 This library uses [maturin](https://github.com/PyO3/maturin) to build the wheel.
 

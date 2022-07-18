@@ -16,8 +16,8 @@ unicode-normalization = "0.1.17"
 seqdiff = "0.3"
 
 [dev-dependencies]
-quickcheck = "0.9"
-quickcheck_macros = "0.9"
+quickcheck = "1"
+quickcheck_macros = "1"
 criterion = "0.3"
 
 [[bench]]
